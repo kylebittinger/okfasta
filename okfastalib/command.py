@@ -9,7 +9,7 @@ from .nucleotide import reverse_complement
 
 def revcomp_subcommand(args):
     seqs = parse_fasta(args.input)
-    rseqs = (desc, reverse_complement(seq) for desc, seq in seqs)
+    rseqs = ((desc, reverse_complement(seq)) for desc, seq in seqs)
     write_fasta(args.output, rseqs)
 
 
