@@ -42,7 +42,7 @@ def main(argv=None):
     )
 
     main_parser = argparse.ArgumentParser()
-    subparsers = main_parser.add_subparsers(help='subcommands')
+    subparsers = main_parser.add_subparsers(help='Subcommands')
 
     filterids_parser = subparsers.add_parser(
         "filterids", parents=[common_parser],
