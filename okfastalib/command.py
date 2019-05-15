@@ -4,6 +4,13 @@ import sys
 
 from .fasta import parse_fasta, write_fasta
 from .util import parse_seq_ids, filter_seq_ids, get_seq_lengths
+from .nucleotide import reverse_complement
+
+
+def revcomp_subcommand(args):
+    seqs = parse_fasta(args.input)
+    rseqs = (desc, reverse_complement(seq) for desc, seq in seqs)
+    write_fasta(args.output, rseqs)
 
 
 def filterids_subcommand(args):
@@ -50,6 +57,11 @@ def main(argv=None):
         "seqlength", parents=[common_parser],
         help='Return sequence lengths in TSV format')
     length_parser.set_defaults(func=length_subcommand)
+
+    revcomp_parser = subparsers.add_parser(
+        "revcomp", parents=[common_parser],
+        help='Reverse complement sequences')
+    revcomp_parser.set_defaults(func=revcomp_subcommand)
 
     args = main_parser.parse_args(argv)
     if args.input is None:
