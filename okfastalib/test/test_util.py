@@ -14,6 +14,13 @@ def test_filter_seq_ids():
     # Only first sequence is missing
     assert list(filter_seq_ids(seqs, ids)) == seqs[1:]
 
+def test_remove_seq_ids():
+    seqs = [("a", "TCGCT"), ("b", "GGCT"), ("cd", "TCGACG")]
+    ids = ["b"]
+    # Original order of seqs is retained
+    # Second sequence is missing
+    assert list(filter_seq_ids(seqs, ids, remove=True)) == [seqs[0], seqs[2]]
+
 def test_get_seq_lengths():
     seqs = [("ab cde", "GCTCGCT"), ("f|g hij", "GCTCGAGTCA")]
     assert list(get_seq_lengths(seqs)) == [("ab", 7), ("f|g", 10)]

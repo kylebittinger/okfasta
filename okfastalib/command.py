@@ -16,7 +16,7 @@ def revcomp_subcommand(args):
 def filterids_subcommand(args):
     seq_ids = set(parse_seq_ids(args.idsfile))
     seqs = parse_fasta(args.input)
-    filtered_seqs = filter_seq_ids(seqs, seq_ids)
+    filtered_seqs = filter_seq_ids(seqs, seq_ids, remove=args.remove_ids)
     write_fasta(args.output, filtered_seqs)
 
 
@@ -50,6 +50,10 @@ def main(argv=None):
     filterids_parser.add_argument(
         "idsfile", type=argparse.FileType('r'),
         help="File containing sequence IDs, one per line",
+    )
+    filterids_parser.add_argument(
+        "--remove-ids", action="store_true",
+        help="Remove, rather than keep, IDs in list",
     )
     filterids_parser.set_defaults(func=filterids_subcommand)
 
