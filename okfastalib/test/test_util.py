@@ -1,5 +1,13 @@
 from okfastalib.util import *
 
+def test_search_seqs():
+    seqs = [("n", "CGTTAC"), ("m", "CTGGTGTCA")]
+    assert list(search_seqs(seqs, "GTTA")) == [("n", "CGTTAC")]
+
+def test_search_seqs_revcomp():
+    seqs = [("n", "CGTTAC"), ("m", "CTGGTGTCA")]
+    assert list(search_seqs(seqs, "ACAC", True)) == [("m", "CTGGTGTCA")]
+
 def test_get_seq_id():
     assert get_seq_id("AB.C|13260 DEF ghijk") == "AB.C|13260"
 

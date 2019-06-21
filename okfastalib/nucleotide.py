@@ -43,3 +43,7 @@ def reverse_complement(seq):
     rc = [COMPLEMENT_BASES[x] for x in seq]
     rc.reverse()
     return ''.join(rc)
+
+def deambiguate(seq):
+    nt_choices = [AMBIGUOUS_BASES[x] for x in seq]
+    return ["".join(c) for c in itertools.product(*nt_choices)]
