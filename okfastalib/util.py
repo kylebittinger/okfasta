@@ -1,3 +1,5 @@
+import re
+
 from .nucleotide import reverse_complement, deambiguate
 
 def get_seq_id(desc):
@@ -25,6 +27,11 @@ def get_seq_lengths(seqs):
     for desc, seq in seqs:
         seq_id = get_seq_id(desc)
         yield seq_id, len(seq)
+
+def search_desc(seqs, regex_str):
+    for seq_id, seq in seqs:
+        if re.search(regex_str, seq_id):
+            yield seq_id, seq
 
 def search_seqs(seqs, query, search_revcomp=False):
     queryset = deambiguate(query)

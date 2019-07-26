@@ -20,7 +20,12 @@ def filterids_subcommand(args):
     filtered_seqs = filter_seq_ids(seqs, seq_ids, remove=args.remove_ids)
     write_fasta(args.output, filtered_seqs)
 
-def search_subcommand(args):
+def searchdesc_subcommand(args):
+    seqs = parse_fasta(args.input)
+    filtered_seqs = search_desc(seqs, args.regex)
+    write_fasta(args.output, filtered_seqs)
+
+def searchseq_subcommand(args):
     seqs = parse_fasta(args.input)
     filtered_seqs = search_seqs(
         seqs, args.queryseq, remove=args.search_revcomp)
@@ -62,18 +67,25 @@ def main(argv=None):
     )
     filterids_parser.set_defaults(func=filterids_subcommand)
 
-    search_parser = subparsers.add_parser(
+    searchdesc_parser = subparsers.add_parser(
+        "searchdesc", parents=[common_parser],
+        help='Find sequences where description line matches pattern')
+    searchdesc_parser.add_argument(
+        "regex",
+        help="Regular expression to search description line")
+    filterids_parser.set_defaults(func=searchdesc_subcommand)
+
+    searchseq_parser = subparsers.add_parser(
         "search", parents=[common_parser],
         help='Find sequences matching query (exact matches)')
-    filterids_parser.add_argument(
+    searchseq_parser.add_argument(
         "queryseq",
-        help="Query sequence",
-    )
-    filterids_parser.add_argument(
+        help="Query sequence")
+    seqrchseq_parser.add_argument(
         "--search-revcomp", action="store_true",
         help="Search for the query or its reverse complement",
     )
-    filterids_parser.set_defaults(func=search_subcommand)
+    searchseq_parser.set_defaults(func=searchseq_subcommand)
 
     length_parser = subparsers.add_parser(
         "seqlength", parents=[common_parser],
