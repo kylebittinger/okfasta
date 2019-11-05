@@ -6,6 +6,19 @@ from .nucleotide import reverse_complement, deambiguate
 def get_seq_id(desc):
     return desc.split()[0]
 
+def filter_positions(seqs, positions, remove=False):
+    positions = set(positions)
+    if remove:
+        def keep_pos(n):
+            return (n + 1) not in positions
+    else:
+        def keep_pos(n):
+            return (n + 1) in positions
+    for desc, seq in seqs:
+        filtered_seq = ''.join(
+            x for n, x in enumerate(seq) if keep_pos(n))
+        yield desc, filtered_seq
+
 def tabulate_positions(seqs):
     for desc, seq in seqs:
         seq_id = get_seq_id(desc)

@@ -5,7 +5,7 @@ import sys
 from .fasta import parse_fasta, write_fasta
 from .seqs import (
     filter_seq_ids, get_seq_lengths, search_seqs, extract_regions,
-    tabulate_positions,
+    tabulate_positions, filter_positions,
 )
 from .parse import parse_seq_ids, parse_regions
 from .nucleotide import reverse_complement
@@ -27,6 +27,13 @@ def revcomp_subcommand(args):
     seqs = parse_fasta(args.input)
     rseqs = ((desc, reverse_complement(seq)) for desc, seq in seqs)
     write_fasta(args.output, rseqs)
+
+def filterpos_subcommand(args):
+    seqs = parse_fasta(args.input)
+    poisitons = parse_positions(args.positionfile)
+    filtered_seqs = filter_positions(
+        seqs, positions, remove=args.remove_positions)
+    write_fasta(args.output, filtered_seqs)
 
 def filterids_subcommand(args):
     seq_ids = set(parse_seq_ids(args.idsfile))
@@ -80,6 +87,19 @@ def main(argv=None):
         help="Remove, rather than keep, IDs in list",
     )
     filterids_parser.set_defaults(func=filterids_subcommand)
+
+    filterpos_parser = subparsers.add_parser(
+        "filterpos", parents=[common_parser],
+        help='Filter sequences by position')
+    filterpos_parser.add_argument(
+        "positionfile", type=argparse.FileType('r'),
+        help="File containing sequence positions, one per line",
+    )
+    filterpos_parser.add_argument(
+        "--remove-positions", action="store_true",
+        help="Remove, rather than keep, sequence positions in list",
+    )
+    filterpos_parser.set_defaults(func=filterpos_subcommand)
 
     extract_parser = subparsers.add_parser(
         "extract", parents=[common_parser],
