@@ -112,7 +112,7 @@ def main(argv=None):
     searchseq_parser.set_defaults(func=searchseq_subcommand)
 
     length_parser = subparsers.add_parser(
-        "seqlength", parents=[common_parser],
+        "length", parents=[common_parser],
         help='Return sequence lengths in TSV format')
     length_parser.set_defaults(func=length_subcommand)
 
