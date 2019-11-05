@@ -3,11 +3,19 @@ import signal
 import sys
 
 from .fasta import parse_fasta, write_fasta
-from .util import (
-    parse_seq_ids, filter_seq_ids, get_seq_lengths, search_seqs,
-    parse_regions, extract_regions,
+from .seqs import (
+    filter_seq_ids, get_seq_lengths, search_seqs, extract_regions,
+    tabulate_positions,
 )
+from .util import parse_seq_ids, parse_regions
 from .nucleotide import reverse_complement
+
+def tabulate_subcommand(args):
+    seqs = parse_fasta(args.input)
+    rows = tabulate_positions(seqs)
+    header = ("seq_id", "position", "value")
+    for seq_id, pos, value in tabulate_positions(seqs):
+        args.output.write("{0}\t{1}\t{2}\n".format(seq_id, pos, value))
 
 def extract_subcommand(args):
     seq_regions = parse_regions(args.regionfile)
@@ -107,6 +115,11 @@ def main(argv=None):
         "seqlength", parents=[common_parser],
         help='Return sequence lengths in TSV format')
     length_parser.set_defaults(func=length_subcommand)
+
+    tabulate_parser = subparsers.add_parser(
+        "tabulate", parents=[common_parser],
+        help='Tabulate sequence elements in TSV format')
+    tabulate_parser.set_defaults(func=tabulate_subcommand)
 
     revcomp_parser = subparsers.add_parser(
         "revcomp", parents=[common_parser],
