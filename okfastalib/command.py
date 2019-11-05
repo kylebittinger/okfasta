@@ -7,7 +7,7 @@ from .seqs import (
     filter_seq_ids, get_seq_lengths, search_seqs, extract_regions,
     tabulate_positions,
 )
-from .util import parse_seq_ids, parse_regions
+from .parse import parse_seq_ids, parse_regions
 from .nucleotide import reverse_complement
 
 def tabulate_subcommand(args):

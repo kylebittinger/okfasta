@@ -1,4 +1,4 @@
-from okfastalib.util import *
+from okfastalib.parse import *
 
 def test_parse_regions_extra_fields():
     f = ["abc 5 7 whatever else"]
