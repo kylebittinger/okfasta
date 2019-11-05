@@ -1,5 +1,15 @@
 from okfastalib.util import *
 
+def test_parse_regions():
+    f = ["seq1 2 5", "seq3 1 3", "seq1 4 7"]
+    regions = [("seq1", 2, 5), ("seq3", 1, 3), ("seq1", 4, 7)]
+    assert list(parse_regions(f)) == regions
+
+def test_extract_regions():
+    regions = [("seq1", 2, 5)]
+    seqs = [("seq1", "ACGACTA")]
+    assert list(extract_regions(regions, seqs)) == [("seq1__2_5", "CGAC")]
+
 def test_search_desc():
     seqs = [("abcde", "GCTTG"), ("PTR1.1 genA", "CTCTCG")]
     assert list(search_desc(seqs, r"\wcd")) == [seqs[0]]

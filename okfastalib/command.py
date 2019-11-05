@@ -5,9 +5,15 @@ import sys
 from .fasta import parse_fasta, write_fasta
 from .util import (
     parse_seq_ids, filter_seq_ids, get_seq_lengths, search_seqs,
+    parse_regions, extract_regions,
 )
 from .nucleotide import reverse_complement
 
+def extract_subcommand(args):
+    seq_regions = parse_regions(args.regionfile)
+    seqs = parse_fasta(args.input)
+    extracted_seqs = extract_regions(seq_regions, seqs)
+    write_fasta(args.output, extracted_seqs)
 
 def revcomp_subcommand(args):
     seqs = parse_fasta(args.input)
@@ -67,13 +73,23 @@ def main(argv=None):
     )
     filterids_parser.set_defaults(func=filterids_subcommand)
 
+    extract_parser = subparsers.add_parser(
+        "extract", parents=[common_parser],
+        help='Extract sequence regions')
+    extract_parser.add_argument(
+        "regionfile", type=argparse.FileType('r'),
+        help=(
+            "File containing sequence ID, start position, and stop "
+            "position for each region to extract."))
+    extract_parser.set_defaults(func=extract_subcommand)
+
     searchdesc_parser = subparsers.add_parser(
         "searchdesc", parents=[common_parser],
         help='Find sequences where description line matches pattern')
     searchdesc_parser.add_argument(
         "regex",
         help="Regular expression to search description line")
-    filterids_parser.set_defaults(func=searchdesc_subcommand)
+    searchdesc_parser.set_defaults(func=searchdesc_subcommand)
 
     searchseq_parser = subparsers.add_parser(
         "search", parents=[common_parser],
@@ -81,7 +97,7 @@ def main(argv=None):
     searchseq_parser.add_argument(
         "queryseq",
         help="Query sequence")
-    seqrchseq_parser.add_argument(
+    searchseq_parser.add_argument(
         "--search-revcomp", action="store_true",
         help="Search for the query or its reverse complement",
     )
