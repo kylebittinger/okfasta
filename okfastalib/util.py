@@ -9,19 +9,17 @@ def parse_regions(f):
         line = line.strip()
         if line.startswith("#") or (line == ""):
             continue
-        vals = line.split()
-        if len(vals) != 3:
-            msg = "Line {0} must have three values {1}"
-            ValueError(msg.format(n, f))
-        seq_id = vals[0]
-        start_pos = int(vals[1])
-        end_pos = int(vals[2])
+        toks = line.split()
+        seq_id = toks[0]
+        start_pos = int(toks[1])
+        end_pos = int(toks[2])
         yield seq_id, start_pos, end_pos
 
 def extract_regions(regions, seqs):
     regions_table = collections.defaultdict(list)
     for seq_id, start_pos, end_pos in regions:
         regions_table[seq_id].append((start_pos, end_pos))
+
     for desc, seq in seqs:
         seq_id = get_seq_id(desc)
         for start_pos, end_pos in regions_table[seq_id]:
