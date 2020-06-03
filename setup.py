@@ -9,7 +9,8 @@ setup(name='okfasta',
       packages=['okfastalib'],
       entry_points = {
           'console_scripts': [
-              'okfasta=okfastalib.command:main',
+              'okfasta=okfastalib.command:okfasta_main',
+              'msa-ok=okfastalib.command:msa_ok_main',
           ],
       }
 )

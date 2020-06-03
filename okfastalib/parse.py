@@ -1,5 +1,14 @@
 import csv
 
+def parse_columns(f):
+    for line in f:
+        line = line.strip()
+        if line.startswith("#") or (line == ""):
+            continue
+        toks = line.split(maxsplit=1)
+        column_idx = int(toks[0])
+        yield column_idx
+
 def parse_regions(f):
     for n, line in enumerate(f):
         line = line.strip()

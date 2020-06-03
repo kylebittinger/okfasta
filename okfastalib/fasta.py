@@ -33,7 +33,7 @@ def parse_fasta(f, trim_desc=False):
                 desc = desc.split()[0]
             seq = StringIO()
         else:
-            line = line.replace(" ", "").replace("U", "T")
+            line = line.replace(" ", "").replace("U", "T").replace(".", "-")
             seq.write(line)
     yield desc, seq.getvalue()
 
