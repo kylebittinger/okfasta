@@ -139,8 +139,6 @@ def okfasta_main(argv=None):
 
 
 def msa_ok_main(argv=None):
-    # Ignore SIG_PIPE and don't throw exceptions on it
-    # newbebweb.blogspot.com/2012/02/python-head-ioerror-errno-32-broken.html
     signal.signal(signal.SIGPIPE, signal.SIG_DFL)
 
     main_parser = argparse.ArgumentParser()
