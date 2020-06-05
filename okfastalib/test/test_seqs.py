@@ -3,9 +3,9 @@ from okfastalib.seqs import *
 def test_get_seq_id():
     assert get_seq_id("AB.C|13260 DEF ghijk") == "AB.C|13260"
 
-def test_filter_positions():
+def test_select_columns():
     seqs = [("hg", "ACGTT-"), ("s2", "--GTAC")]
-    assert list(filter_positions(seqs, [1, 3, 4, 5])) == [
+    assert list(select_columns(seqs, [1, 3, 4, 5])) == [
         ("hg", "AGTT"), ("s2", "-GTA")]
 
 def test_tabulate_positions():
