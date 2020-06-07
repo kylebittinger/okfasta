@@ -5,7 +5,10 @@ import sys
 from .fasta import parse_fasta, write_fasta
 from .seqs import (
     filter_seq_ids, get_seq_lengths, search_seqs, extract_regions,
-    tabulate_positions, select_columns, search_desc,
+    search_desc, tabulate_positions,
+)
+from .msa import (
+    enumerate1, MSA, column_stats,
 )
 from .parse import (
     parse_seq_ids, parse_regions, parse_columns,
@@ -32,10 +35,25 @@ def revcomp_subcommand(args):
 
 def selectcol_subcommand(args):
     seqs = parse_fasta(args.input)
-    columns = parse_columns(args.columnfile)
-    result_seqs = select_columns(
-        seqs, columns, remove=args.remove_columns)
-    write_fasta(args.output, result_seqs)
+    column_idxs = parse_columns(args.columnfile)
+    msa = MSA.from_seqs(seqs)
+    msa.filter_by_index(column_idxs, remove=args.remove_columns)
+    write_fasta(args.output, msa.seqs)
+
+def colstats_subcommand(args):
+    seqs = parse_fasta(args.input)
+    msa = MSA.from_seqs(seqs)
+    header = (
+        "column_position", "number_of_values", "gaps_proportion",
+        "entropy", "consensus_value", "consensus_proportion",
+    )
+    args.output.write("\t".join(header))
+    args.output.write("\n")
+    for col_pos, col in enumerate1(msa.cols):
+        col_stats_vals = column_stats(col)
+        vals = [col_pos].extend(col_stats_vals)
+        args.output.write("t".join(str(val for v in vals)))
+        args.output.write("\n")
 
 def filterids_subcommand(args):
     seq_ids = set(parse_seq_ids(args.idsfile))
@@ -130,6 +148,11 @@ def okfasta_main(argv=None):
         help='Reverse complement sequences')
     revcomp_parser.set_defaults(func=revcomp_subcommand)
 
+    tabulate_parser = subparsers.add_parser(
+        "tabulate", parents=[fasta_io_parser],
+        help='Tabulate sequence elements in TSV format')
+    tabulate_parser.set_defaults(func=tabulate_subcommand)
+
     args = main_parser.parse_args(argv)
     if args.input is None:
         args.input = sys.stdin
@@ -146,7 +169,7 @@ def msa_ok_main(argv=None):
 
     selectcol_parser = subparsers.add_parser(
         "selectcol", parents=[fasta_io_parser],
-        help='Select columns in an alignment')
+        help='Select columns by position')
     selectcol_parser.add_argument(
         "columnfile", type=argparse.FileType('r'),
         help="File containing column numbers, one per line",
@@ -157,10 +180,10 @@ def msa_ok_main(argv=None):
     )
     selectcol_parser.set_defaults(func=selectcol_subcommand)
 
-    tabulate_parser = subparsers.add_parser(
-        "tabulate", parents=[fasta_io_parser],
-        help='Tabulate sequence elements in TSV format')
-    tabulate_parser.set_defaults(func=tabulate_subcommand)
+    colstats_parser = subparsers.add_parser(
+        "colstats", parents=[fasta_io_parser],
+        help='Compute summary statistics')
+    colstats_parser.set_defaults(func=colstats_subcommand)
 
     args = main_parser.parse_args(argv)
     if args.input is None:
