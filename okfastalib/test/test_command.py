@@ -16,12 +16,10 @@ def test_colstats():
         "--input", rumino_aligned_fp,
         "--output", output_file.name]
     msa_ok_main(argv)
-    output_file.seek(0)
-    print(output_file.read())
     output_file.seek(0)    
 
     header_line = output_file.readline()
     assert header_line.startswith("column_position\t")
 
     col1_line = output_file.readline()
-    assert col1_line == "1\t3\t"
+    assert col1_line == "1\t1\t0.90\t0.0000\tT\t1.00\n"

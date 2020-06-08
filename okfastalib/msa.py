@@ -91,11 +91,14 @@ def column_stats(col):
     )
 
 def shannon(cts):
+    cts = [c for c in cts if c > 0]
+    # If we use the formula when h=0, python will return -0.0
+    if len(cts) == 1:
+        return 0.0
     total = sum(cts)
     props = [c / total for c in cts]
-    shannon_terms = [p * math.log(p) if p > 0 else 0 for p in props]
-    h = -sum(shannon_terms)
-    return h if h > 0 else 0
+    h = -sum(p * math.log(p) for p in props)
+    return h
 
 def strcat(xs):
     return ''.join(xs)
