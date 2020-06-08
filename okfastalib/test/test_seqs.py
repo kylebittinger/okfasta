@@ -3,12 +3,12 @@ from okfastalib.seqs import *
 def test_get_seq_id():
     assert get_seq_id("AB.C|13260 DEF ghijk") == "AB.C|13260"
 
-def test_tabulate_positions():
-    seqs = [("kj dfus", "ACG"), ("fh:9", "-T")]
-    rows = tabulate_positions(seqs)
+def test_get_kmers():
+    seqs = [("kj dfus", "ACGT"), ("fh:9", "-TA")]
+    rows = get_kmers(seqs, 2)
     assert list(rows) == [
-        ("kj", 1, "A"), ("kj", 2, "C"), ("kj", 3, "G"),
-        ("fh:9", 1, "-"), ("fh:9", 2, "T"),
+        ("kj", 1, "AC"), ("kj", 2, "CG"), ("kj", 3, "GT"),
+        ("fh:9", 1, "-T"), ("fh:9", 2, "TA"),
     ]
 
 def test_extract_regions():

@@ -6,11 +6,14 @@ from .nucleotide import reverse_complement, deambiguate
 def get_seq_id(desc):
     return desc.split()[0]
 
-def tabulate_positions(seqs):
+def get_kmers(seqs, k=8):
     for desc, seq in seqs:
+        n_kmers = len(seq) - k + 1
+        if n_kmers < 1:
+            continue
         seq_id = get_seq_id(desc)
-        for n, val in enumerate(seq):
-            yield (seq_id, n + 1, val)
+        for i in range(n_kmers):
+            yield (seq_id, i + 1, seq[i:(i + k)])
 
 def extract_regions(regions, seqs):
     regions_table = collections.defaultdict(list)

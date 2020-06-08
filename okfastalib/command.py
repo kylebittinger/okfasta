@@ -5,7 +5,7 @@ import sys
 from .fasta import parse_fasta, write_fasta
 from .seqs import (
     filter_seq_ids, get_seq_lengths, search_seqs, extract_regions,
-    search_desc, tabulate_positions,
+    search_desc, get_kmers,
 )
 from .msa import (
     enumerate1, MSA, column_stats,
@@ -15,12 +15,12 @@ from .parse import (
     )
 from .nucleotide import reverse_complement
 
-def tabulate_subcommand(args):
+def kmers_subcommand(args):
     seqs = parse_fasta(args.input)
-    rows = tabulate_positions(seqs)
+    rows = get_kmers(seqs, args.k)
     header = ("seq_id", "position", "value")
-    for seq_id, pos, value in tabulate_positions(seqs):
-        args.output.write("{0}\t{1}\t{2}\n".format(seq_id, pos, value))
+    for seq_id, pos, kmer in get_kmers(seqs, args.k):
+        args.output.write("{0}\t{1}\t{2}\n".format(seq_id, pos, kmer))
 
 def extract_subcommand(args):
     seq_regions = parse_regions(args.regionfile)
@@ -148,10 +148,10 @@ def okfasta_main(argv=None):
         help='Reverse complement sequences')
     revcomp_parser.set_defaults(func=revcomp_subcommand)
 
-    tabulate_parser = subparsers.add_parser(
-        "tabulate", parents=[fasta_io_parser],
-        help='Tabulate sequence elements in TSV format')
-    tabulate_parser.set_defaults(func=tabulate_subcommand)
+    kmers_parser = subparsers.add_parser(
+        "kmers", parents=[fasta_io_parser],
+        help='Write kmers in TSV format')
+    kmers_parser.set_defaults(func=kmers_subcommand)
 
     args = main_parser.parse_args(argv)
     if args.input is None:
