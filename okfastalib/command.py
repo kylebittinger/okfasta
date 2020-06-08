@@ -50,10 +50,9 @@ def colstats_subcommand(args):
     args.output.write("\t".join(header))
     args.output.write("\n")
     for col_pos, col in enumerate1(msa.cols):
-        col_stats_vals = column_stats(col)
-        vals = [col_pos].extend(col_stats_vals)
-        args.output.write("t".join(str(val for v in vals)))
-        args.output.write("\n")
+        c = column_stats(col)
+        args.output.write("{0}\t".format(col_pos))
+        args.output.write(c.format_output())
 
 def filterids_subcommand(args):
     seq_ids = set(parse_seq_ids(args.idsfile))

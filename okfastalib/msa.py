@@ -59,6 +59,12 @@ class ColumnStatsResult:
     consensus_val: str
     consensus_prop: float
 
+    def format_output(self):
+        return "{0}\t{1:1.2f}\t{2:1.4f}\t{3}\t{4:1.2f}\n".format(
+            self.nvals, self.prop_gaps, self.entropy,
+            self.consensus_val, self.consensus_prop,
+        )
+    
 def column_stats(col):
     len_col = len(col)
     ngaps = col.count("-")
@@ -88,7 +94,8 @@ def shannon(cts):
     total = sum(cts)
     props = [c / total for c in cts]
     shannon_terms = [p * math.log(p) if p > 0 else 0 for p in props]
-    return -sum(shannon_terms)
+    h = -sum(shannon_terms)
+    return h if h > 0 else 0
 
 def strcat(xs):
     return ''.join(xs)
