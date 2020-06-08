@@ -68,7 +68,7 @@ def searchdesc_subcommand(args):
 def searchseq_subcommand(args):
     seqs = parse_fasta(args.input)
     filtered_seqs = search_seqs(
-        seqs, args.queryseq, remove=args.search_revcomp)
+        seqs, args.queryseq, search_revcomp=args.search_revcomp)
     write_fasta(args.output, filtered_seqs)
 
 def length_subcommand(args):
@@ -149,7 +149,11 @@ def okfasta_main(argv=None):
 
     kmers_parser = subparsers.add_parser(
         "kmers", parents=[fasta_io_parser],
-        help='Write kmers in TSV format')
+        help='Write k-mers in TSV format')
+    kmers_parser.add_argument(
+        "k", type=int,
+        help="K-mer size"
+    )
     kmers_parser.set_defaults(func=kmers_subcommand)
 
     args = main_parser.parse_args(argv)

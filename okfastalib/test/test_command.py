@@ -71,3 +71,33 @@ def test_extract_subcommand():
         ("a|b__3_7", "AGACG"),
         ("c|2.1__1_2", "GC"),
     ]
+
+def test_filterids_subcommand():
+    output = run_okfasta(["searchdesc", "^a"], small_fasta)
+    assert parse_fasta_list(output) == [("a|b 42", "GCAGACGATAC")]
+
+def test_seqrchseq_subcommand():
+    output = run_okfasta(["search", "AGACGAT"], small_fasta)
+    assert parse_fasta_list(output) == [("a|b 42", "GCAGACGATAC")]
+
+def test_length_subcommand():
+    output = run_okfasta(["length"], small_fasta)
+    assert output == ["a|b\t11\n", "c|2.1\t9\n"]
+
+def test_revcomp_subcommand():
+    output = run_okfasta(["revcomp"], small_fasta)
+    assert parse_fasta_list(output) == [
+        ("a|b 42", "GTATCGTCTGC"),
+        ("c|2.1 d", "ACCGGCTGC"),
+    ]
+
+def test_kmers_subcommand():
+    output = run_okfasta(["kmers", "8"], small_fasta)
+    assert output == [
+        "a|b\t1\tGCAGACGA\n",
+        "a|b\t2\tCAGACGAT\n",
+        "a|b\t3\tAGACGATA\n",
+        "a|b\t4\tGACGATAC\n",
+        "c|2.1\t1\tGCAGCCGG\n",
+        "c|2.1\t2\tCAGCCGGT\n",
+    ]
