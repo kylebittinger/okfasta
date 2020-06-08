@@ -61,3 +61,13 @@ def test_filterids_subcommand():
     ids_file = tempfile_containing("c|2.1")
     output = run_okfasta(["filterids", ids_file.name], small_fasta)
     assert parse_fasta_list(output) == [("c|2.1 d", "GCAGCCGGT")]
+
+def test_extract_subcommand():
+    region_file = tempfile_containing(
+        "a|b\t3\t7\n"
+        "c|2.1\t1\t2\n")
+    output = run_okfasta(["extract", region_file.name], small_fasta)
+    assert parse_fasta_list(output) == [
+        ("a|b__3_7", "AGACG"),
+        ("c|2.1__1_2", "GC"),
+    ]
