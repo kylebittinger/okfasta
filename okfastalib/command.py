@@ -152,7 +152,7 @@ def okfasta_main(argv=None):
         help='Write k-mers in TSV format')
     kmers_parser.add_argument(
         "--k", type=int, default=8,
-        help="K-mer size"
+        help="K-mer size (default: %(default)s)"
     )
     kmers_parser.set_defaults(func=kmers_subcommand)
 
