@@ -17,8 +17,6 @@ from .nucleotide import reverse_complement
 
 def kmers_subcommand(args):
     seqs = parse_fasta(args.input)
-    rows = get_kmers(seqs, args.k)
-    header = ("seq_id", "position", "value")
     for seq_id, pos, kmer in get_kmers(seqs, args.k):
         args.output.write("{0}\t{1}\t{2}\n".format(seq_id, pos, kmer))
 
