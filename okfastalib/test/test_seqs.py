@@ -11,6 +11,13 @@ def test_get_kmers():
         ("fh:9", 1, "-T"), ("fh:9", 2, "TA"),
     ]
 
+def test_get_kmers_no_results():
+    seqs = [("kj dfus", "ACGT"), ("bb8", "ACGGTA")]
+    rows = get_kmers(seqs, 5)
+    assert list(rows) == [
+        ("bb8", 1, "ACGGT"), ("bb8", 2, "CGGTA"),
+    ]
+
 def test_extract_regions():
     regions = [("seq1", 2, 5)]
     seqs = [("seq1", "ACGACTA")]

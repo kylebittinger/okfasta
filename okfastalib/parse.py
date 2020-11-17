@@ -1,6 +1,6 @@
 import csv
 
-def parse_columns(f):
+def parse_column_idxs(f):
     for line in f:
         line = line.strip()
         if line.startswith("#") or (line == ""):
@@ -19,11 +19,6 @@ def parse_regions(f):
         start_pos = int(toks[1])
         end_pos = int(toks[2])
         yield seq_id, start_pos, end_pos
-
-def write_tsv(f, header, rows):
-    w = csv.writer(f, lineterminator="\n", delimiter="\t")
-    w.writerow(header)
-    w.writerows(rows)
 
 def parse_seq_ids(f):
     for line in f:

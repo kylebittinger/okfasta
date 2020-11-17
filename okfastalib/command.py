@@ -11,7 +11,7 @@ from .msa import (
     enumerate1, MSA, column_stats,
 )
 from .parse import (
-    parse_seq_ids, parse_regions, parse_columns,
+    parse_seq_ids, parse_regions, parse_column_idxs,
     )
 from .nucleotide import reverse_complement
 
@@ -33,7 +33,7 @@ def revcomp_subcommand(args):
 
 def selectcol_subcommand(args):
     seqs = parse_fasta(args.input)
-    column_idxs = parse_columns(args.columnfile)
+    column_idxs = parse_column_idxs(args.columnfile)
     msa = MSA.from_seqs(seqs)
     msa.filter_by_index(column_idxs, remove=args.remove_columns)
     write_fasta(args.output, msa.seqs)
@@ -155,9 +155,9 @@ def okfasta_main(argv=None):
     kmers_parser.set_defaults(func=kmers_subcommand)
 
     args = main_parser.parse_args(argv)
-    if args.input is None:
+    if args.input is None: # pragma: no cover
         args.input = sys.stdin
-    if args.output is None:
+    if args.output is None: # pragma: no cover
         args.output = sys.stdout
     args.func(args)
 
@@ -187,9 +187,9 @@ def msa_ok_main(argv=None):
     colstats_parser.set_defaults(func=colstats_subcommand)
 
     args = main_parser.parse_args(argv)
-    if args.input is None:
+    if args.input is None: # pragma: no cover
         args.input = sys.stdin
-    if args.output is None:
+    if args.output is None: # pragma: no cover
         args.output = sys.stdout
     args.func(args)
 

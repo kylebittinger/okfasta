@@ -72,7 +72,7 @@ def test_extract_subcommand():
         ("c|2.1__1_2", "GC"),
     ]
 
-def test_filterids_subcommand():
+def test_searchdesc_subcommand():
     output = run_okfasta(["searchdesc", "^a"], small_fasta)
     assert parse_fasta_list(output) == [("a|b 42", "GCAGACGATAC")]
 

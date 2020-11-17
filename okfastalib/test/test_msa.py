@@ -15,15 +15,28 @@ def test_msa_from_seqs():
     assert msa.descs == ("a", "b", "c")
     assert msa.cols == ["ABC", "DEF", "GHI", "JKL"]
 
-def test_msa_filter():
+def test_msa_filter_by_index():
     msa = MSA(["a", "b", "c"], ["ABC", "DEF", "GHI", "JKL"])
     msa.filter_by_index((2, 4))
     assert msa.cols == ["DEF", "JKL"]
     
-def test_msa_filter_remove():
+def test_msa_filter_by_index_remove():
     msa = MSA(["a", "b", "c"], ["ABC", "DEF", "GHI", "JKL"])
     msa.filter_by_index((2, 4), remove=True)
     assert msa.cols == ["ABC", "GHI"]
+
+def test_msa_filter():
+    msa = MSA(["a", "b", "c"], ["ABC", "DEF", "GHI", "JKL"])
+    def has_no_Gs(xs):
+        return "G" not in xs
+    msa.filter(has_no_Gs)
+    assert msa.cols == ["ABC", "DEF", "JKL"]
+
+def test_msa_map():
+    msa = MSA(["a", "b", "c"], ["ABC", "DEF", "GHI", "JKL"])
+    def make_lowercase(xs):
+        return xs.lower()
+    assert list(msa.map(make_lowercase)) == ["abc", "def", "ghi", "jkl"]
 
 def test_strcat():
     assert strcat(['ab', 'cde']) == 'abcde'
