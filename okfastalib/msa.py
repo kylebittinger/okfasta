@@ -1,4 +1,3 @@
-from dataclasses import dataclass
 import collections
 import math
 import itertools
@@ -37,6 +36,41 @@ class MSA:
     def map(self, fcn):
         return map(fcn, self.cols)
 
+    column_stats_header = [
+            "column_position", "number_of_values", "gaps_proportion",
+            "entropy", "consensus_value", "consensus_proportion",
+        ]
+
+    column_stats_fmt = "{0}\t{1}\t{2:1.2f}\t{3:1.4f}\t{4}\t{5:1.2f}"
+
+    def column_stats(self):
+        for col_position, col in enumerate1(self.cols):
+            len_col = len(col)
+            ngaps = col.count("-")
+            nvals = len_col - ngaps
+            if nvals == 0:
+                yield {
+                    "column_position": col_position,
+                    "number_of_values": 0,
+                    "gaps_proportion": 1.0,
+                    "entropy": 0.0,
+                    "consensus_value": "-",
+                    "consensus_proportion": 1.0
+                }
+                continue
+            ctr = collections.Counter(col)
+            del ctr["-"]
+            cts = ctr.values()
+            consensus_val, consensus_cts = ctr.most_common(1)[0]
+            yield {
+                "column_position": col_position,
+                "number_of_values": nvals,
+                "gaps_proportion": ngaps / len_col,
+                "entropy": shannon(cts),
+                "consensus_value": consensus_val,
+                "consensus_proportion": consensus_cts / nvals,
+            }
+
     @property
     def seqs(self):
         seqvals = map(strcat, zip(*self.cols))
@@ -51,44 +85,6 @@ class MSA:
         ]
         return cls(descs, cols)
 
-@dataclass
-class ColumnStatsResult:
-    nvals: int
-    prop_gaps: float
-    entropy: float
-    consensus_val: str
-    consensus_prop: float
-
-    def format_output(self):
-        return "{0}\t{1:1.2f}\t{2:1.4f}\t{3}\t{4:1.2f}\n".format(
-            self.nvals, self.prop_gaps, self.entropy,
-            self.consensus_val, self.consensus_prop,
-        )
-    
-def column_stats(col):
-    len_col = len(col)
-    ngaps = col.count("-")
-    nvals = len_col - ngaps
-    if nvals == 0:
-        return ColumnStatsResult(
-            nvals = 0,
-            prop_gaps = 1.0,
-            entropy = 0.0,
-            consensus_val = "-",
-            consensus_prop = 1.0,
-        )
-    assert nvals > 0
-    ctr = collections.Counter(col)
-    del ctr["-"]
-    cts = ctr.values()
-    consensus_val, consensus_cts = ctr.most_common(1)[0]
-    return ColumnStatsResult(
-        nvals = nvals,
-        prop_gaps = ngaps / len_col,
-        entropy = shannon(cts),
-        consensus_val = consensus_val,
-        consensus_prop = consensus_cts / nvals,
-    )
 
 def shannon(cts):
     cts = [c for c in cts if c > 0]
@@ -99,6 +95,7 @@ def shannon(cts):
     props = [c / total for c in cts]
     h = -sum(p * math.log(p) for p in props)
     return h
+
 
 def strcat(xs):
     return ''.join(xs)

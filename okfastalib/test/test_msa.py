@@ -46,25 +46,37 @@ def test_shannon():
     assert shannon([5, 5, 0, 0]) == approx(0.6931472)
 
 def test_column_stats():
-    res = column_stats('aaaabbbb--')
-    assert res.nvals == 8
-    assert res.prop_gaps == 0.2
-    assert res.entropy == approx(0.6931472)
-    assert res.consensus_val == "a"
-    assert res.consensus_prop == 0.5
+    m = MSA('abcdefghij', ['aaaabbbb--'])
+    s = next(m.column_stats())
+    assert s == {
+        "column_position": 1,
+        "number_of_values": 8,
+        "gaps_proportion": 0.2,
+        "entropy": approx(0.6931472),
+        "consensus_value": "a",
+        "consensus_proportion": 0.5
+    }
 
 def test_column_stats_allgaps():
-    res = column_stats('----------')
-    assert res.nvals == 0
-    assert res.prop_gaps == 1.0
-    assert res.entropy == 0.0
-    assert res.consensus_val == "-"
-    assert res.consensus_prop == 1.0
+    m = MSA('abcdefghij', ['----------'])
+    s = next(m.column_stats())
+    assert s == {
+        "column_position": 1,
+        "number_of_values": 0,
+        "gaps_proportion": 1.0,
+        "entropy": 0.0,
+        "consensus_value": "-",
+        "consensus_proportion": 1.0
+    }
 
 def test_column_stats_nogaps():
-    res = column_stats('ccggttaacc')
-    assert res.nvals == 10
-    assert res.prop_gaps == 0.0
-    assert res.entropy == approx(1.332179)
-    assert res.consensus_val == "c"
-    assert res.consensus_prop == 0.4
+    m = MSA('abcdefghij', ['ccggttaacc'])
+    s = next(m.column_stats())
+    assert s == {
+        "column_position": 1,
+        "number_of_values": 10,
+        "gaps_proportion": 0.0,
+        "entropy": approx(1.332179),
+        "consensus_value": "c",
+        "consensus_proportion": 0.4
+    }

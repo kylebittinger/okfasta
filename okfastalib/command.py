@@ -7,13 +7,11 @@ from .seqs import (
     filter_seq_ids, get_seq_lengths, search_seqs, extract_regions,
     search_desc, get_kmers,
 )
-from .msa import (
-    enumerate1, MSA, column_stats,
-)
+from .msa import MSA
+from .nucleotide import reverse_complement
 from .parse import (
     parse_seq_ids, parse_regions, parse_column_idxs,
     )
-from .nucleotide import reverse_complement
 
 def kmers_subcommand(args):
     seqs = parse_fasta(args.input)
@@ -41,16 +39,12 @@ def selectcol_subcommand(args):
 def colstats_subcommand(args):
     seqs = parse_fasta(args.input)
     msa = MSA.from_seqs(seqs)
-    header = (
-        "column_position", "number_of_values", "gaps_proportion",
-        "entropy", "consensus_value", "consensus_proportion",
-    )
-    args.output.write("\t".join(header))
+    args.output.write("\t".join(msa.column_stats_header))
     args.output.write("\n")
-    for col_pos, col in enumerate1(msa.cols):
-        c = column_stats(col)
-        args.output.write("{0}\t".format(col_pos))
-        args.output.write(c.format_output())
+    for stats_result in msa.column_stats():
+        stats_values = stats_result.values()
+        args.output.write(msa.column_stats_fmt.format(*stats_values))
+        args.output.write("\n")
 
 def filterids_subcommand(args):
     seq_ids = set(parse_seq_ids(args.idsfile))
