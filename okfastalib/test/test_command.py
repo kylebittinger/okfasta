@@ -92,7 +92,7 @@ def test_revcomp_subcommand():
     ]
 
 def test_kmers_subcommand():
-    output = run_okfasta(["kmers", "8"], small_fasta)
+    output = run_okfasta(["kmers", "--k", "8"], small_fasta)
     assert output == [
         "a|b\t1\tGCAGACGA\n",
         "a|b\t2\tCAGACGAT\n",
