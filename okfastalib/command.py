@@ -1,4 +1,5 @@
 import argparse
+import random
 import signal
 import sys
 
@@ -12,6 +13,13 @@ from .nucleotide import reverse_complement
 from .parse import (
     parse_seq_ids, parse_regions, parse_column_idxs,
     )
+
+def randomseqs_subcommand(args):
+    seqs = list(parse_fasta(args.input))
+    if args.n > len(seqs):
+        args.n = len(seqs)
+    selected_seqs = random.sample(seqs, args.n)
+    write_fasta(args.output, selected_seqs)
 
 def kmers_subcommand(args):
     seqs = parse_fasta(args.input)
@@ -85,6 +93,15 @@ def okfasta_main(argv=None):
 
     main_parser = argparse.ArgumentParser()
     subparsers = main_parser.add_subparsers(help='Subcommands')
+
+    randomseqs_parser = subparsers.add_parser(
+        "randomseqs", parents=[fasta_io_parser],
+        help='Select a number of random sequences')
+    randomseqs_parser.add_argument(
+        "--n", type=int, default=100,
+        help="Number of sequences (default: %(default)s)",
+    )
+    randomseqs_parser.set_defaults(func=randomseqs_subcommand)
 
     filterids_parser = subparsers.add_parser(
         "filterids", parents=[fasta_io_parser],

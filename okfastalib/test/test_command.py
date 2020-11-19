@@ -13,6 +13,29 @@ GCAGACGATAC
 GCAGCCGGT
 """
 
+tall_fasta = """\
+>a
+CTT
+>b
+GAT
+>c
+TCA
+>d
+ATG
+>e
+CAG
+>f
+ACC
+>g
+TGG
+>h
+GCT
+>i
+TAA
+>j
+AGC
+"""
+
 small_aligned_fasta = """\
 >a|b 42
 -CAGACGAT-
@@ -56,6 +79,20 @@ def run_okfasta(argv, input_data):
     output_file.seek(0)
     res = output_file.readlines()
     return res
+
+def test_randomseqs_subcommand():
+    output = run_okfasta(["randomseqs", "--n", "3"], tall_fasta)
+    input_seqs = parse_fasta_list(tall_fasta.splitlines())
+    output_seqs = parse_fasta_list(output)
+    assert len(output_seqs) == 3
+    for output_seq in output_seqs:
+        assert output_seq in input_seqs
+
+def test_randomseqs_subcommand_largen():
+    output = run_okfasta(["randomseqs", "--n", "20"], tall_fasta)
+    input_seqs = parse_fasta_list(tall_fasta.splitlines())
+    output_seqs = parse_fasta_list(output)
+    assert list(sorted(output_seqs)) == input_seqs
 
 def test_filterids_subcommand():
     ids_file = tempfile_containing("c|2.1")
