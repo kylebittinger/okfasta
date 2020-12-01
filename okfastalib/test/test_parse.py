@@ -16,3 +16,8 @@ def test_parse_regions():
 def test_parse_seq_ids():
     f = ["Id1\n", "\tId2|345 678  \n", "   ", "   # a comment", "  id3"]
     assert list(parse_seq_ids(f)) == ["Id1", "Id2|345", "id3"]
+
+def test_parse_new_ids():
+    f = ["seq1 jfk", "kj\tjdf\tss", " # comment!", "\t\t\t", "seq3     k"]
+    assert list(parse_new_ids(f)) == [
+        ("seq1", "jfk"), ("kj", "jdf"), ("seq3", "k")]

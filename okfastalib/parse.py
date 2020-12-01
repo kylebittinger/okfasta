@@ -28,3 +28,12 @@ def parse_seq_ids(f):
         seq_id = line.split()[0]
         yield seq_id
 
+def parse_new_ids(f):
+    for line in f:
+        line = line.strip()
+        if line.startswith("#") or (line == ""):
+            continue
+        toks = line.split()
+        old_seq_id = toks[0]
+        new_seq_id = toks[1]
+        yield old_seq_id, new_seq_id

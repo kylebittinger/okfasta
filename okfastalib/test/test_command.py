@@ -80,6 +80,12 @@ def run_okfasta(argv, input_data):
     res = output_file.readlines()
     return res
 
+def test_replaceids_subcommand():
+    newids_file = tempfile_containing("c|2.1\tc-2\naaa ggg\n")
+    output = run_okfasta(["replaceids", newids_file.name], small_fasta)
+    output_seq_ids = [seq_id for seq_id, seq in parse_fasta_list(output)]
+    assert output_seq_ids == ["a|b 42", "c-2 d"]
+
 def test_randomseqs_subcommand():
     output = run_okfasta(["randomseqs", "--n", "3"], tall_fasta)
     input_seqs = parse_fasta_list(tall_fasta.splitlines())

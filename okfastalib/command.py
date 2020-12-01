@@ -6,13 +6,19 @@ import sys
 from .fasta import parse_fasta, write_fasta
 from .seqs import (
     filter_seq_ids, get_seq_lengths, search_seqs, extract_regions,
-    search_desc, get_kmers,
+    search_desc, get_kmers, replace_seq_ids,
 )
 from .msa import MSA
 from .nucleotide import reverse_complement
 from .parse import (
-    parse_seq_ids, parse_regions, parse_column_idxs,
+    parse_seq_ids, parse_regions, parse_column_idxs, parse_new_ids,
     )
+
+def replaceids_subcommand(args):
+    seqs = parse_fasta(args.input)
+    new_ids = dict(parse_new_ids(args.newidsfile))
+    relabeled_seqs = replace_seq_ids(seqs, new_ids)
+    write_fasta(args.output, relabeled_seqs)
 
 def randomseqs_subcommand(args):
     seqs = list(parse_fasta(args.input))
@@ -93,6 +99,18 @@ def okfasta_main(argv=None):
 
     main_parser = argparse.ArgumentParser()
     subparsers = main_parser.add_subparsers(help='Subcommands')
+
+    replaceids_subparser = subparsers.add_parser(
+        "replaceids", parents=[fasta_io_parser],
+        help="Replace sequence IDs with new ones")
+    replaceids_subparser.add_argument(
+        "newidsfile", type=argparse.FileType('r'),
+        help=(
+            "File containing existing sequence ID and replacement "
+            "sequence ID, one pair per line, separated by "
+            "whitespace. Existing sequence IDs not in the file are "
+            "left as they are."))
+    replaceids_subparser.set_defaults(func=replaceids_subcommand)
 
     randomseqs_parser = subparsers.add_parser(
         "randomseqs", parents=[fasta_io_parser],

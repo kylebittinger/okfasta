@@ -3,6 +3,18 @@ import re
 
 from .nucleotide import reverse_complement, deambiguate
 
+def replace_seq_ids(seqs, new_seqids):
+    for desc, seq in seqs:
+        toks = re.split("(\\s)", desc, maxsplit=1)
+        old_seq_id = toks[0]
+        new_seq_id = new_seqids.get(old_seq_id)
+        if new_seq_id is None:
+            yield (desc, seq)
+        else:
+            rest = toks[1:]
+            new_desc = new_seq_id + ''.join(rest)
+            yield (new_desc, seq)
+
 def get_seq_id(desc):
     return desc.split()[0]
 

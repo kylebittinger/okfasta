@@ -53,3 +53,9 @@ def test_remove_seq_ids():
 def test_get_seq_lengths():
     seqs = [("ab cde", "GCTCGCT"), ("f|g hij", "GCTCGAGTCA")]
     assert list(get_seq_lengths(seqs)) == [("ab", 7), ("f|g", 10)]
+
+def test_replace_seq_ids():
+    seqs = [("s1 fh ks", "AC"), ("s2\tjj", "CC"), ("s3 mgg", "TT")]
+    new_ids = {"s1": "nhnh", "s2": "ppwww", "s14": "ldldl"}
+    assert list(replace_seq_ids(seqs, new_ids)) == [
+        ("nhnh fh ks", "AC"), ("ppwww\tjj", "CC"), ("s3 mgg", "TT")]
