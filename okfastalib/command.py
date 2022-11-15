@@ -6,13 +6,21 @@ import sys
 from .fasta import parse_fasta, write_fasta
 from .seqs import (
     filter_seq_ids, get_seq_lengths, search_seqs, extract_regions,
-    search_desc, get_kmers, replace_seq_ids,
+    search_desc, get_kmers, replace_seq_ids, replace_chars,
 )
 from .msa import MSA
 from .nucleotide import reverse_complement
 from .parse import (
     parse_seq_ids, parse_regions, parse_column_idxs, parse_new_ids,
     )
+
+def replacechars_subcommand(args):
+    replacements = [(x, y) for x, y in args.replace]
+    for x in args.remove:
+        replacements.append((x, ''))
+    seqs = parse_fasta(args.input)
+    replaced_seqs = replace_chars(seqs, replacements)
+    write_fasta(args.output, replaced_seqs)
 
 def replaceids_subcommand(args):
     seqs = parse_fasta(args.input)
@@ -99,6 +107,17 @@ def okfasta_main(argv=None):
 
     main_parser = argparse.ArgumentParser()
     subparsers = main_parser.add_subparsers(help='Subcommands')
+
+    replacechars_subparser = subparsers.add_parser(
+        "replacechars", parents=[fasta_io_parser],
+        help="Replace or remove characters in the sequence")
+    replacechars_subparser.add_argument(
+        "--replace", type=str, nargs=2, action="append",
+        help="Characters in the sequence to replace"),
+    replacechars_subparser.add_argument(
+        "--remove", type=str, action="append",
+        help="Characters in the sequence to remove"),
+    replacechars_subparser.set_defaults(func=replacechars_subcommand)
 
     replaceids_subparser = subparsers.add_parser(
         "replaceids", parents=[fasta_io_parser],

@@ -80,6 +80,16 @@ def run_okfasta(argv, input_data):
     res = output_file.readlines()
     return res
 
+def test_replacechars_subcommand():
+    output = run_okfasta([
+        "replacechars",
+        "--replace", "A", "B",
+        "--replace", "C", "D",
+        "--remove", "G",
+        ], small_fasta)
+    output_seqs = parse_fasta_list(output)
+    assert output_seqs == [("a|b 42", "DBBDBTBD"), ("c|2.1 d", "DBDDT")]
+
 def test_replaceids_subcommand():
     newids_file = tempfile_containing("c|2.1\tc-2\naaa ggg\n")
     output = run_okfasta(["replaceids", newids_file.name], small_fasta)
