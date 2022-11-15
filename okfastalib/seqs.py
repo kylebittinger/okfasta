@@ -3,6 +3,12 @@ import re
 
 from .nucleotide import reverse_complement, deambiguate
 
+def replace_chars(seqs, replacements):
+    for desc, seq in seqs:
+        for x, y in replacements:
+            seq = seq.replace(x, y)
+        yield desc, seq
+
 def replace_seq_ids(seqs, new_seqids):
     for desc, seq in seqs:
         toks = re.split("(\\s)", desc, maxsplit=1)

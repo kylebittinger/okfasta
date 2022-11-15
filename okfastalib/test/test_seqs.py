@@ -1,5 +1,17 @@
 from okfastalib.seqs import *
 
+def test_replace_chars():
+    seqs = [("a", "MCUUAC"), ("b", "TCGA")]
+    observed = replace_chars(seqs, [("U", "T"), ("M", "G")])
+    expected = [("a", "GCTTAC"), ("b", "TCGA")]
+    assert list(observed) == expected
+
+def test_remove_chars():
+    seqs = [("a", "GCTTAC"), ("b", "TCGA")]
+    observed = replace_chars(seqs, [("T", "")])
+    expected = [("a", "GCAC"), ("b", "CGA")]
+    assert list(observed) == expected
+
 def test_get_seq_id():
     assert get_seq_id("AB.C|13260 DEF ghijk") == "AB.C|13260"
 
