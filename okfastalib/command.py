@@ -82,7 +82,7 @@ def searchdesc_subcommand(args):
 def searchseq_subcommand(args):
     seqs = parse_fasta(args.input)
     filtered_seqs = search_seqs(
-        seqs, args.queryseq, search_revcomp=args.search_revcomp)
+        seqs, args.query, search_revcomp=args.search_revcomp)
     write_fasta(args.output, filtered_seqs)
 
 def length_subcommand(args):
@@ -108,6 +108,52 @@ def okfasta_main(argv=None):
     main_parser = argparse.ArgumentParser()
     subparsers = main_parser.add_subparsers(help='Subcommands')
 
+    extract_parser = subparsers.add_parser(
+        "extract", parents=[fasta_io_parser],
+        help='Extract sequence regions')
+    extract_parser.add_argument(
+        "regionfile", type=argparse.FileType('r'),
+        help=(
+            "File containing sequence ID, start position, and stop "
+            "position for each region to extract."))
+    extract_parser.set_defaults(func=extract_subcommand)
+
+    filterids_parser = subparsers.add_parser(
+        "filterids", parents=[fasta_io_parser],
+        help='Filter by sequence ID')
+    filterids_parser.add_argument(
+        "idsfile", type=argparse.FileType('r'),
+        help="File containing sequence IDs, one per line",
+    )
+    filterids_parser.add_argument(
+        "--remove-ids", action="store_true",
+        help="Remove, rather than keep, IDs in list",
+    )
+    filterids_parser.set_defaults(func=filterids_subcommand)
+
+    kmers_parser = subparsers.add_parser(
+        "kmers", parents=[fasta_io_parser],
+        help='Write k-mers in TSV format')
+    kmers_parser.add_argument(
+        "--k", type=int, default=8,
+        help="K-mer size (default: %(default)s)"
+    )
+    kmers_parser.set_defaults(func=kmers_subcommand)
+
+    length_parser = subparsers.add_parser(
+        "length", parents=[fasta_io_parser],
+        help='Return sequence lengths in TSV format')
+    length_parser.set_defaults(func=length_subcommand)
+
+    randomseqs_parser = subparsers.add_parser(
+        "randomseqs", parents=[fasta_io_parser],
+        help='Select a number of random sequences')
+    randomseqs_parser.add_argument(
+        "--n", type=int, default=100,
+        help="Number of sequences (default: %(default)s)",
+    )
+    randomseqs_parser.set_defaults(func=randomseqs_subcommand)
+
     replacechars_subparser = subparsers.add_parser(
         "replacechars", parents=[fasta_io_parser],
         help="Replace or remove characters in the sequence")
@@ -131,37 +177,10 @@ def okfasta_main(argv=None):
             "left as they are."))
     replaceids_subparser.set_defaults(func=replaceids_subcommand)
 
-    randomseqs_parser = subparsers.add_parser(
-        "randomseqs", parents=[fasta_io_parser],
-        help='Select a number of random sequences')
-    randomseqs_parser.add_argument(
-        "--n", type=int, default=100,
-        help="Number of sequences (default: %(default)s)",
-    )
-    randomseqs_parser.set_defaults(func=randomseqs_subcommand)
-
-    filterids_parser = subparsers.add_parser(
-        "filterids", parents=[fasta_io_parser],
-        help='Filter by sequence ID')
-    filterids_parser.add_argument(
-        "idsfile", type=argparse.FileType('r'),
-        help="File containing sequence IDs, one per line",
-    )
-    filterids_parser.add_argument(
-        "--remove-ids", action="store_true",
-        help="Remove, rather than keep, IDs in list",
-    )
-    filterids_parser.set_defaults(func=filterids_subcommand)
-
-    extract_parser = subparsers.add_parser(
-        "extract", parents=[fasta_io_parser],
-        help='Extract sequence regions')
-    extract_parser.add_argument(
-        "regionfile", type=argparse.FileType('r'),
-        help=(
-            "File containing sequence ID, start position, and stop "
-            "position for each region to extract."))
-    extract_parser.set_defaults(func=extract_subcommand)
+    revcomp_parser = subparsers.add_parser(
+        "revcomp", parents=[fasta_io_parser],
+        help='Reverse complement sequences')
+    revcomp_parser.set_defaults(func=revcomp_subcommand)
 
     searchdesc_parser = subparsers.add_parser(
         "searchdesc", parents=[fasta_io_parser],
@@ -172,35 +191,16 @@ def okfasta_main(argv=None):
     searchdesc_parser.set_defaults(func=searchdesc_subcommand)
 
     searchseq_parser = subparsers.add_parser(
-        "search", parents=[fasta_io_parser],
+        "searchseq", parents=[fasta_io_parser],
         help='Find sequences that match a query sequence exactly')
     searchseq_parser.add_argument(
-        "queryseq",
+        "query",
         help="Query sequence")
     searchseq_parser.add_argument(
         "--search-revcomp", action="store_true",
         help="Search for the query or its reverse complement",
     )
     searchseq_parser.set_defaults(func=searchseq_subcommand)
-
-    length_parser = subparsers.add_parser(
-        "length", parents=[fasta_io_parser],
-        help='Return sequence lengths in TSV format')
-    length_parser.set_defaults(func=length_subcommand)
-
-    revcomp_parser = subparsers.add_parser(
-        "revcomp", parents=[fasta_io_parser],
-        help='Reverse complement sequences')
-    revcomp_parser.set_defaults(func=revcomp_subcommand)
-
-    kmers_parser = subparsers.add_parser(
-        "kmers", parents=[fasta_io_parser],
-        help='Write k-mers in TSV format')
-    kmers_parser.add_argument(
-        "--k", type=int, default=8,
-        help="K-mer size (default: %(default)s)"
-    )
-    kmers_parser.set_defaults(func=kmers_subcommand)
 
     args = main_parser.parse_args(argv)
     if args.input is None: # pragma: no cover

@@ -130,7 +130,7 @@ def test_searchdesc_subcommand():
     assert parse_fasta_list(output) == [("a|b 42", "GCAGACGATAC")]
 
 def test_seqrchseq_subcommand():
-    output = run_okfasta(["search", "AGACGAT"], small_fasta)
+    output = run_okfasta(["searchseq", "AGACGAT"], small_fasta)
     assert parse_fasta_list(output) == [("a|b 42", "GCAGACGATAC")]
 
 def test_length_subcommand():
