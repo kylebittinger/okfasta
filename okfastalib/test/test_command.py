@@ -84,15 +84,23 @@ def test_normalize_subcommand():
     output = run_okfasta(["normalize"], ">a b\nCAGG\nTCGG\n>c\nGG\nCTA")
     assert output == [">a b\n", "CAGGTCGG\n", ">c\n", "GGCTA\n"]
 
+def test_replacechars_subcommand_remove():
+    output = run_okfasta([
+        "replacechars",
+        "--remove", "G",
+        "--remove", "A",
+        ], small_fasta)
+    output_seqs = parse_fasta_list(output)
+    assert output_seqs == [("a|b 42", "CCTC"), ("c|2.1 d", "CCCT")]
+
 def test_replacechars_subcommand():
     output = run_okfasta([
         "replacechars",
         "--replace", "A", "B",
         "--replace", "C", "D",
-        "--remove", "G",
         ], small_fasta)
     output_seqs = parse_fasta_list(output)
-    assert output_seqs == [("a|b 42", "DBBDBTBD"), ("c|2.1 d", "DBDDT")]
+    assert output_seqs == [("a|b 42", "GDBGBDGBTBD"), ("c|2.1 d", "GDBGDDGGT")]
 
 def test_replaceids_subcommand():
     newids_file = tempfile_containing("c|2.1\tc-2\naaa ggg\n")

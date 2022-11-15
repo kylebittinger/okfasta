@@ -19,9 +19,13 @@ def normalize_subcommand(args):
     write_fasta(args.output, seqs)
 
 def replacechars_subcommand(args):
-    replacements = [(x, y) for x, y in args.replace]
-    for x in args.remove:
-        replacements.append((x, ''))
+    if args.replace is None:
+        replacements = []
+    else:
+        replacements = [(x, y) for x, y in args.replace]
+    if args.remove is not None:
+        for x in args.remove:
+            replacements.append((x, ''))
     seqs = parse_fasta(args.input)
     replaced_seqs = replace_chars(seqs, replacements)
     write_fasta(args.output, replaced_seqs)
