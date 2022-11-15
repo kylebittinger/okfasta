@@ -123,12 +123,10 @@ def okfasta_main(argv=None):
         help='Filter by sequence ID')
     filterids_parser.add_argument(
         "idsfile", type=argparse.FileType('r'),
-        help="File containing sequence IDs, one per line",
-    )
+        help="File containing sequence IDs, one per line")
     filterids_parser.add_argument(
         "--remove-ids", action="store_true",
-        help="Remove, rather than keep, IDs in list",
-    )
+        help="Remove, rather than keep, IDs in list")
     filterids_parser.set_defaults(func=filterids_subcommand)
 
     kmers_parser = subparsers.add_parser(
@@ -136,45 +134,42 @@ def okfasta_main(argv=None):
         help='Write k-mers in TSV format')
     kmers_parser.add_argument(
         "--k", type=int, default=8,
-        help="K-mer size (default: %(default)s)"
-    )
+        help="K-mer size (default: %(default)s)")
     kmers_parser.set_defaults(func=kmers_subcommand)
 
     length_parser = subparsers.add_parser(
         "length", parents=[fasta_io_parser],
-        help='Return sequence lengths in TSV format')
+        help='Write sequence lengths in TSV format')
     length_parser.set_defaults(func=length_subcommand)
 
     randomseqs_parser = subparsers.add_parser(
         "randomseqs", parents=[fasta_io_parser],
-        help='Select a number of random sequences')
+        help='Select random sequences')
     randomseqs_parser.add_argument(
         "--n", type=int, default=100,
-        help="Number of sequences (default: %(default)s)",
-    )
+        help="Number of sequences (default: %(default)s)")
     randomseqs_parser.set_defaults(func=randomseqs_subcommand)
 
     replacechars_subparser = subparsers.add_parser(
         "replacechars", parents=[fasta_io_parser],
-        help="Replace or remove characters in the sequence")
+        help="Replace characters in the sequences")
     replacechars_subparser.add_argument(
         "--replace", type=str, nargs=2, action="append",
-        help="Characters in the sequence to replace"),
+        help="Characters to replace")
     replacechars_subparser.add_argument(
         "--remove", type=str, action="append",
-        help="Characters in the sequence to remove"),
+        help="Characters to remove")
     replacechars_subparser.set_defaults(func=replacechars_subcommand)
 
     replaceids_subparser = subparsers.add_parser(
         "replaceids", parents=[fasta_io_parser],
-        help="Replace sequence IDs with new ones")
+        help="Replace sequence IDs")
     replaceids_subparser.add_argument(
         "newidsfile", type=argparse.FileType('r'),
         help=(
             "File containing existing sequence ID and replacement "
-            "sequence ID, one pair per line, separated by "
-            "whitespace. Existing sequence IDs not in the file are "
-            "left as they are."))
+            "sequence ID, one pair per line, separated by whitespace. "
+            "Existing sequence IDs not in the file are left as they are."))
     replaceids_subparser.set_defaults(func=replaceids_subcommand)
 
     revcomp_parser = subparsers.add_parser(
@@ -184,10 +179,10 @@ def okfasta_main(argv=None):
 
     searchdesc_parser = subparsers.add_parser(
         "searchdesc", parents=[fasta_io_parser],
-        help='Find sequences where description line matches pattern')
+        help='Find sequences where description matches pattern')
     searchdesc_parser.add_argument(
         "regex",
-        help="Regular expression to search description line")
+        help="Regular expression for searching descriptions")
     searchdesc_parser.set_defaults(func=searchdesc_subcommand)
 
     searchseq_parser = subparsers.add_parser(
@@ -198,7 +193,7 @@ def okfasta_main(argv=None):
         help="Query sequence")
     searchseq_parser.add_argument(
         "--search-revcomp", action="store_true",
-        help="Search for the query or its reverse complement",
+        help="Search for the query and its reverse complement",
     )
     searchseq_parser.set_defaults(func=searchseq_subcommand)
 
