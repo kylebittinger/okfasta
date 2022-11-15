@@ -14,6 +14,10 @@ from .parse import (
     parse_seq_ids, parse_regions, parse_column_idxs, parse_new_ids,
     )
 
+def normalize_subcommand(args):
+    seqs = parse_fasta(args.input)
+    write_fasta(args.output, seqs)
+
 def replacechars_subcommand(args):
     replacements = [(x, y) for x, y in args.replace]
     for x in args.remove:
@@ -141,6 +145,11 @@ def okfasta_main(argv=None):
         "length", parents=[fasta_io_parser],
         help='Write sequence lengths in TSV format')
     length_parser.set_defaults(func=length_subcommand)
+
+    normalize_parser = subparsers.add_parser(
+        "normalize", parents=[fasta_io_parser],
+        help='Rewrite FASTA file in standard format')
+    normalize_parser.set_defaults(func=normalize_subcommand)
 
     randomseqs_parser = subparsers.add_parser(
         "randomseqs", parents=[fasta_io_parser],

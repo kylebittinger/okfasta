@@ -80,6 +80,10 @@ def run_okfasta(argv, input_data):
     res = output_file.readlines()
     return res
 
+def test_normalize_subcommand():
+    output = run_okfasta(["normalize"], ">a b\nCAGG\nTCGG\n>c\nGG\nCTA")
+    assert output == [">a b\n", "CAGGTCGG\n", ">c\n", "GGCTA\n"]
+
 def test_replacechars_subcommand():
     output = run_okfasta([
         "replacechars",
