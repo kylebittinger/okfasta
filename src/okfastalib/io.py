@@ -1,5 +1,3 @@
-import csv
-
 def parse_column_idxs(f):
     for line in f:
         line = line.strip()
