@@ -4,7 +4,7 @@ import tempfile
 from okfastalib.command import (
     okfasta_main, msa_ok_main,
 )
-from okfastalib.fasta import parse_fasta
+from okfastalib.io import parse_fasta
 
 small_fasta = """\
 >a|b 42

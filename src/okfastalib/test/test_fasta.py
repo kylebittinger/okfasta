@@ -1,2 +1,0 @@
-from okfastalib.fasta import *
-
