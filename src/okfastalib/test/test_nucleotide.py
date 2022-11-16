@@ -1,2 +1,0 @@
-from okfastalib.nucleotide import *
-
