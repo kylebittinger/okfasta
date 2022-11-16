@@ -5,10 +5,9 @@ import sys
 
 from .seqs import (
     filter_seq_ids, get_seq_lengths, search_seqs, extract_regions,
-    search_desc, get_kmers, replace_seq_ids, replace_chars,
+    search_desc, get_kmers, replace_seq_ids, replace_chars, reverse_complement,
 )
 from .msa import MSA
-from .nucleotide import reverse_complement
 from .io import (
     parse_fasta, write_fasta, parse_seq_ids, parse_regions, parse_column_idxs,
     parse_new_ids,
