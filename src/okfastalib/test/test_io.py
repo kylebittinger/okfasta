@@ -1,4 +1,4 @@
-from okfastalib.parse import *
+from okfastalib.io import *
 
 def test_parse_column_idxs():
     f = ["3", "   ", " # comment line", "6 with extra stuff"]

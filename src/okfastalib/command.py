@@ -10,7 +10,7 @@ from .seqs import (
 )
 from .msa import MSA
 from .nucleotide import reverse_complement
-from .parse import (
+from .io import (
     parse_seq_ids, parse_regions, parse_column_idxs, parse_new_ids,
     )
 
