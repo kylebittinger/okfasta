@@ -1,11 +1,11 @@
 import argparse
-import random
 import signal
 import sys
 
 from .seqs import (
     filter_seq_ids, get_seq_lengths, search_seqs, extract_regions,
     search_desc, get_kmers, replace_seq_ids, replace_chars, reverse_complement,
+    randomize_seqs,
 )
 from .msa import MSA
 from .io import (
@@ -36,11 +36,9 @@ def replaceids_subcommand(args):
     write_fasta(args.output, relabeled_seqs)
 
 def randomseqs_subcommand(args):
-    seqs = list(parse_fasta(args.input))
-    if args.n > len(seqs):
-        args.n = len(seqs)
-    selected_seqs = random.sample(seqs, args.n)
-    write_fasta(args.output, selected_seqs)
+    seqs = parse_fasta(args.input)
+    rseqs = randomize_seqs(seqs, args.n)
+    write_fasta(args.output, rseqs)
 
 def kmers_subcommand(args):
     seqs = parse_fasta(args.input)

@@ -1,7 +1,13 @@
 import collections
 import itertools
+import random
 import re
 
+def randomize_seqs(seqs, n):
+    seqs = list(seqs)
+    if n > len(seqs):
+        n = len(seqs)
+    return random.sample(seqs, n)
 
 def replace_chars(seqs, replacements):
     for desc, seq in seqs:
