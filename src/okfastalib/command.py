@@ -111,7 +111,8 @@ def okfasta_main(argv=None):
     signal.signal(signal.SIGPIPE, signal.SIG_DFL)
 
     main_parser = argparse.ArgumentParser()
-    subparsers = main_parser.add_subparsers(help='Subcommands')
+    subparsers = main_parser.add_subparsers(
+        title="Subcommands", required=True)
 
     extract_parser = subparsers.add_parser(
         "extract", parents=[fasta_io_parser],
@@ -219,7 +220,8 @@ def msa_ok_main(argv=None):
     signal.signal(signal.SIGPIPE, signal.SIG_DFL)
 
     main_parser = argparse.ArgumentParser()
-    subparsers = main_parser.add_subparsers(help='Subcommands')
+    subparsers = main_parser.add_subparsers(
+        title="Subcommands", required=True)
 
     selectcol_parser = subparsers.add_parser(
         "selectcol", parents=[fasta_io_parser],
