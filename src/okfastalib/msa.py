@@ -3,14 +3,6 @@ import math
 import itertools
 
 
-def enumerate1(xs):
-    for n, x in enumerate(xs):
-        yield (n + 1), x
-
-def range1(stop):
-    for n in range(stop):
-        yield (n + 1)
-
 class MSA:
     def __init__(self, descs, cols):
         self.descs = descs
@@ -78,7 +70,6 @@ class MSA:
         ]
         return cls(descs, cols)
 
-
 def shannon(cts):
     cts = [c for c in cts if c > 0]
     # If we use the formula when h=0, python will return -0.0
@@ -89,6 +80,13 @@ def shannon(cts):
     h = -sum(p * math.log(p) for p in props)
     return h
 
+def range1(stop):
+    for n in range(stop):
+        yield (n + 1)
+
+def enumerate1(xs):
+    for n, x in enumerate(xs):
+        yield (n + 1), x
 
 def strcat(xs):
     return ''.join(xs)
