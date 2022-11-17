@@ -13,7 +13,7 @@ are generally only useful for aligned FASTA files.
 ## Installation
 
 Download or clone this git repository, navigate to the top-level
-directoy (the one with setup.py), and install with `pip`:
+directoy and install with `pip`:
 
 ```bash
 pip install .
