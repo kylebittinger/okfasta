@@ -1,5 +1,5 @@
-import math
 from pytest import approx
+
 from okfastalib.msa import *
 
 

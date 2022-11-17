@@ -71,3 +71,12 @@ def test_replace_seq_ids():
     new_ids = {"s1": "nhnh", "s2": "ppwww", "s14": "ldldl"}
     assert list(replace_seq_ids(seqs, new_ids)) == [
         ("nhnh fh ks", "AC"), ("ppwww\tjj", "CC"), ("s3 mgg", "TT")]
+
+def test_reverse_complement():
+    assert reverse_complement("ACGGTAT") == "ATACCGT"
+
+def test_reverse_complement_n():
+    assert reverse_complement("AGNN") == "NNCT"
+
+def test_reverse_complement_ambiguous():
+    assert reverse_complement("RNSG") == "CSNY"

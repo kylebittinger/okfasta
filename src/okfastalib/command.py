@@ -1,17 +1,16 @@
 import argparse
-import random
 import signal
 import sys
 
-from .fasta import parse_fasta, write_fasta
 from .seqs import (
     filter_seq_ids, get_seq_lengths, search_seqs, extract_regions,
-    search_desc, get_kmers, replace_seq_ids, replace_chars,
+    search_desc, get_kmers, replace_seq_ids, replace_chars, reverse_complement,
+    randomize_seqs,
 )
 from .msa import MSA
-from .nucleotide import reverse_complement
-from .parse import (
-    parse_seq_ids, parse_regions, parse_column_idxs, parse_new_ids,
+from .io import (
+    parse_fasta, write_fasta, parse_seq_ids, parse_regions, parse_column_idxs,
+    parse_new_ids,
     )
 
 def normalize_subcommand(args):
@@ -37,11 +36,9 @@ def replaceids_subcommand(args):
     write_fasta(args.output, relabeled_seqs)
 
 def randomseqs_subcommand(args):
-    seqs = list(parse_fasta(args.input))
-    if args.n > len(seqs):
-        args.n = len(seqs)
-    selected_seqs = random.sample(seqs, args.n)
-    write_fasta(args.output, selected_seqs)
+    seqs = parse_fasta(args.input)
+    rseqs = randomize_seqs(seqs, args.n)
+    write_fasta(args.output, rseqs)
 
 def kmers_subcommand(args):
     seqs = parse_fasta(args.input)

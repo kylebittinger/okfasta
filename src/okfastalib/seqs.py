@@ -1,7 +1,13 @@
 import collections
+import itertools
+import random
 import re
 
-from .nucleotide import reverse_complement, deambiguate
+def randomize_seqs(seqs, n):
+    seqs = list(seqs)
+    if n > len(seqs):
+        n = len(seqs)
+    return random.sample(seqs, n)
 
 def replace_chars(seqs, replacements):
     for desc, seq in seqs:
@@ -76,3 +82,48 @@ def search_seqs(seqs, query, search_revcomp=False):
             if qseq in seq:
                 yield seq_id, seq
                 continue
+
+def reverse_complement(seq):
+    rc = [COMPLEMENT_BASES[x] for x in seq]
+    rc.reverse()
+    return ''.join(rc)
+
+def deambiguate(seq):
+    nt_choices = [AMBIGUOUS_BASES[x] for x in seq]
+    return ["".join(c) for c in itertools.product(*nt_choices)]
+
+AMBIGUOUS_BASES = {
+    "T": "T",
+    "C": "C",
+    "A": "A",
+    "G": "G",
+    "R": "AG",
+    "Y": "TC",
+    "M": "CA",
+    "K": "TG",
+    "S": "CG",
+    "W": "TA",
+    "H": "TCA",
+    "B": "TCG",
+    "V": "CAG",
+    "D": "TAG",
+    "N": "TCAG",
+    }
+
+COMPLEMENT_BASES = {
+    "T": "A",
+    "C": "G",
+    "A": "T",
+    "G": "C",
+    "R": "Y",
+    "Y": "R",
+    "M": "K",
+    "K": "M",
+    "S": "S",
+    "W": "W",
+    "H": "D",
+    "B": "V",
+    "V": "B",
+    "D": "H",
+    "N": "N",
+}

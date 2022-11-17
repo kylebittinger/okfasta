@@ -1,4 +1,12 @@
-from okfastalib.parse import *
+from okfastalib.io import *
+
+def test_parse_fasta():
+    f = [
+        ">ab c", "GG VU", "LG",
+        ">bu\tter", "CGTA"
+    ]
+    seqs = parse_fasta(f)
+    assert list(seqs) == [("ab c", "GGVULG"), ("bu\tter", "CGTA")]
 
 def test_parse_column_idxs():
     f = ["3", "   ", " # comment line", "6 with extra stuff"]
