@@ -24,3 +24,6 @@ classifiers = [
 [project.scripts]
 "okfasta" = "okfastalib.command:okfasta_main"
 "msa-ok" = "okfastalib.command:msa_ok_main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/okfastalib"]
