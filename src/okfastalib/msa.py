@@ -22,19 +22,12 @@ class MSA:
         for col in self.cols:
             assert len(col) == len_descs
 
-    def filter(self, fcn):
-        self.cols = [col for col in self.cols if fcn(col)]
-        return self
-
     def filter_by_index(self, idxs, remove=False):
         idxs = set(idxs)
         if remove:
             idxs = [idx for idx in range1(len(self.cols)) if idx not in idxs]
         self.cols = [col for idx, col in enumerate1(self.cols) if idx in idxs]
         return self
-
-    def map(self, fcn):
-        return map(fcn, self.cols)
 
     column_stats_header = [
             "column_position", "number_of_values", "gaps_proportion",
