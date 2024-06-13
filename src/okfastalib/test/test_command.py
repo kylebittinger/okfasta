@@ -84,6 +84,10 @@ def test_mismatches_subcommand():
     output = run_msa_ok(["mismatches"], mismatch_aligned_fasta)
     assert output == ["a\tc-3\t2\n", "a\tEd\t5\n", "c-3\tEd\t7\n"]
 
+def test_mismatches_includegaps_subcommand():
+    output = run_msa_ok(["mismatches", "--include-gaps"], mismatch_aligned_fasta)
+    assert output == ["a\tc-3\t3\n", "a\tEd\t5\n", "c-3\tEd\t8\n"]
+
 def run_okfasta(argv, input_data):
     input_file = tempfile_containing(input_data)
     output_file = tempfile_containing("")

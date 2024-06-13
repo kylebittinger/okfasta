@@ -77,7 +77,8 @@ def colstats_subcommand(args):
 
 def mismatches_subcommand(args):
     seqs = parse_fasta(args.input)
-    mms = pairwise_mismatches(seqs)
+    remove_gaps = not args.include_gaps
+    mms = pairwise_mismatches(seqs, remove_gaps=remove_gaps)
     for id1, id2, mm in mms:
         args.output.write("{0}\t{1}\t{2}\n".format(id1, id2, mm))
 
