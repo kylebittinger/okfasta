@@ -43,6 +43,15 @@ small_aligned_fasta = """\
 GC-GCCGG--
 """
 
+mismatch_aligned_fasta = """\
+>a b
+CGTACGTCGAA
+>c-3
+CGT-CGTCGTT
+>Ed
+CGTAAAAAAAA
+"""
+
 def parse_fasta_list(f):
     return list(parse_fasta(f))
 
@@ -70,6 +79,18 @@ def test_selectcol_subcommand():
     column_file = tempfile_containing("1\n6\n8\n")
     output = run_msa_ok(["selectcol", column_file.name], small_aligned_fasta)
     assert list(parse_fasta(output)) == [('a|b 42', '-CA'), ('c|2.1 d', 'GCG')]
+
+def test_mismatches_subcommand():
+    output = run_msa_ok(["mismatches"], mismatch_aligned_fasta)
+    assert output == ["a\tc-3\t2\n", "a\tEd\t5\n", "c-3\tEd\t7\n"]
+
+def test_mismatches_includegaps_subcommand():
+    output = run_msa_ok(["mismatches", "--include-gaps"], mismatch_aligned_fasta)
+    assert output == ["a\tc-3\t3\n", "a\tEd\t5\n", "c-3\tEd\t8\n"]
+
+def test_mismatches_percent_subcommand():
+    output = run_msa_ok(["mismatches", "--percent"], mismatch_aligned_fasta)
+    assert output == ["a\tc-3\t20.00\n", "a\tEd\t45.45\n", "c-3\tEd\t70.00\n"]
 
 def run_okfasta(argv, input_data):
     input_file = tempfile_containing(input_data)

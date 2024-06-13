@@ -7,7 +7,9 @@ from .seqs import (
     search_desc, get_kmers, replace_seq_ids, replace_chars, reverse_complement,
     randomize_seqs,
 )
-from .msa import MSA
+from .msa import (
+    MSA, pairwise_mismatches,
+    )
 from .io import (
     parse_fasta, write_fasta, parse_seq_ids, parse_regions, parse_column_idxs,
     parse_new_ids,
@@ -72,6 +74,16 @@ def colstats_subcommand(args):
         stats_values = stats_result.values()
         args.output.write(msa.column_stats_fmt.format(*stats_values))
         args.output.write("\n")
+
+def mismatches_subcommand(args):
+    seqs = parse_fasta(args.input)
+    vals = pairwise_mismatches(seqs, include_gaps=args.include_gaps, percent=args.percent)
+    if args.percent:
+        outfmt = "{0}\t{1}\t{2:.2f}\n"
+    else:
+        outfmt = "{0}\t{1}\t{2}\n"
+    for id1, id2, val in vals:
+        args.output.write(outfmt.format(id1, id2, val))
 
 def filterids_subcommand(args):
     seq_ids = set(parse_seq_ids(args.idsfile))
@@ -240,6 +252,17 @@ def msa_ok_main(argv=None):
         "colstats", parents=[fasta_io_parser],
         help='Compute summary statistics')
     colstats_parser.set_defaults(func=colstats_subcommand)
+
+    mismatches_parser = subparsers.add_parser(
+        "mismatches", parents=[fasta_io_parser],
+        help="Number of mismatches (Hamming distance) between aligned sequences")
+    mismatches_parser.add_argument(
+        "--include-gaps", action="store_true",
+        help="Include gaps when counting mismatches (excluded by default)")
+    mismatches_parser.add_argument(
+        "--percent", action="store_true",
+        help="Report percentage mismatch rather than number of mismatches")
+    mismatches_parser.set_defaults(func=mismatches_subcommand)
 
     args = main_parser.parse_args(argv)
     if args.input is None: # pragma: no cover
