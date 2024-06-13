@@ -2,6 +2,7 @@ import collections
 import math
 import itertools
 
+from .seqs import get_seq_id
 
 class MSA:
     def __init__(self, descs, cols):
@@ -90,3 +91,19 @@ def enumerate1(xs):
 
 def strcat(xs):
     return ''.join(xs)
+
+def mismatches(seq1, seq2, remove_gaps=True):
+    mm = 0
+    for char1, char2 in zip(seq1, seq2):
+        if remove_gaps:
+            if (char1 == "-") or (char2 == "-"):
+                continue
+        if char1 != char2:
+            mm += 1
+    return mm
+
+def pairwise_mismatches(seqs, remove_gaps=True):
+    seqs = ((get_seq_id(desc), seq) for (desc, seq) in seqs)
+    for (id1, seq1), (id2, seq2) in itertools.combinations(seqs, 2):
+        mm = mismatches(seq1, seq2, remove_gaps=remove_gaps)
+        yield(id1, id2, mm)

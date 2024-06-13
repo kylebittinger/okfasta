@@ -67,3 +67,20 @@ def test_column_stats_nogaps():
         "consensus_value": "c",
         "consensus_proportion": 0.4
     }
+
+def test_pairwise_mismatches():
+    seqs = [
+        ("a b", "GTCC"),
+        ("t|k", "G-CA"),
+        ("ryt", "AAAA"),
+    ]
+    assert list(pairwise_mismatches(seqs)) == [
+        ("a", "t|k", 1),
+        ("a", "ryt", 4),
+        ("t|k", "ryt", 2),
+    ]
+
+def test_mismatches():
+    assert mismatches("ABCD", "ABEE") == 2
+    assert mismatches("ABCD", "AB-E") == 1
+    assert mismatches("ABCD", "AB-E", remove_gaps=False) == 2
