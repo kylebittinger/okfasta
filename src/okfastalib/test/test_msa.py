@@ -79,8 +79,18 @@ def test_pairwise_mismatches():
         ("a", "ryt", 4),
         ("t|k", "ryt", 2),
     ]
+    assert list(pairwise_mismatches(seqs, include_gaps=True)) == [
+        ("a", "t|k", 2),
+        ("a", "ryt", 4),
+        ("t|k", "ryt", 3),
+    ]
+    assert list(pairwise_mismatches(seqs, percent=True)) == [
+        ("a", "t|k", 100 * 1 / 3),
+        ("a", "ryt", 100 * 4 / 4),
+        ("t|k", "ryt", 100 * 2 / 3),
+    ]
 
 def test_mismatches():
     assert mismatches("ABCD", "ABEE") == 2
     assert mismatches("ABCD", "AB-E") == 1
-    assert mismatches("ABCD", "AB-E", remove_gaps=False) == 2
+    assert mismatches("ABCD", "AB-E", include_gaps=True) == 2

@@ -77,10 +77,13 @@ def colstats_subcommand(args):
 
 def mismatches_subcommand(args):
     seqs = parse_fasta(args.input)
-    remove_gaps = not args.include_gaps
-    mms = pairwise_mismatches(seqs, remove_gaps=remove_gaps)
-    for id1, id2, mm in mms:
-        args.output.write("{0}\t{1}\t{2}\n".format(id1, id2, mm))
+    vals = pairwise_mismatches(seqs, include_gaps=args.include_gaps, percent=args.percent)
+    if args.percent:
+        outfmt = "{0}\t{1}\t{2:.2f}\n"
+    else:
+        outfmt = "{0}\t{1}\t{2}\n"
+    for id1, id2, val in vals:
+        args.output.write(outfmt.format(id1, id2, val))
 
 def filterids_subcommand(args):
     seq_ids = set(parse_seq_ids(args.idsfile))
@@ -256,6 +259,9 @@ def msa_ok_main(argv=None):
     mismatches_parser.add_argument(
         "--include-gaps", action="store_true",
         help="Include gaps when counting mismatches (excluded by default)")
+    mismatches_parser.add_argument(
+        "--percent", action="store_true",
+        help="Report percentage mismatch rather than number of mismatches")
     mismatches_parser.set_defaults(func=mismatches_subcommand)
 
     args = main_parser.parse_args(argv)
