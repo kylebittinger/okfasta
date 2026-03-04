@@ -32,8 +32,9 @@ def replacechars_subcommand(args):
     write_fasta(args.output_file, replaced_seqs)
 
 def replaceids_subcommand(args):
+    new_ids_file = open(args.newidsfile, "r")
+    new_ids = dict(parse_new_ids(new_ids_file))
     seqs = parse_fasta(args.input_file)
-    new_ids = dict(parse_new_ids(args.newidsfile))
     relabeled_seqs = replace_seq_ids(seqs, new_ids)
     write_fasta(args.output_file, relabeled_seqs)
 
@@ -48,7 +49,8 @@ def kmers_subcommand(args):
         args.output_file.write("{0}\t{1}\t{2}\n".format(seq_id, pos, kmer))
 
 def extract_subcommand(args):
-    seq_regions = parse_regions(args.regionfile)
+    region_file = open(args.regionfile, "r")
+    seq_regions = parse_regions(region_file)
     seqs = parse_fasta(args.input_file)
     extracted_seqs = extract_regions(seq_regions, seqs)
     write_fasta(args.output_file, extracted_seqs)
@@ -59,8 +61,9 @@ def revcomp_subcommand(args):
     write_fasta(args.output_file, rseqs)
 
 def selectcol_subcommand(args):
+    column_file = open(args.columnfile, "r")
+    column_idxs = parse_column_idxs(column_file)
     seqs = parse_fasta(args.input_file)
-    column_idxs = parse_column_idxs(args.columnfile)
     msa = MSA.from_seqs(seqs)
     msa.filter_by_index(column_idxs, remove=args.remove_columns)
     write_fasta(args.output_file, msa.seqs)
@@ -86,7 +89,8 @@ def mismatches_subcommand(args):
         args.output_file.write(outfmt.format(id1, id2, val))
 
 def filterids_subcommand(args):
-    seq_ids = set(parse_seq_ids(args.idsfile))
+    ids_file = open(args.idsfile, "r")
+    seq_ids = set(parse_seq_ids(ids_file))
     seqs = parse_fasta(args.input_file)
     filtered_seqs = filter_seq_ids(seqs, seq_ids, remove=args.remove_ids)
     write_fasta(args.output_file, filtered_seqs)
@@ -130,7 +134,7 @@ def okfasta_main(argv=None):
         "extract", parents=[fasta_io_parser],
         help='Extract sequence regions')
     extract_parser.add_argument(
-        "regionfile", type=argparse.FileType('r'),
+        "regionfile",
         help=(
             "File containing sequence ID, start position, and stop "
             "position for each region to extract."))
@@ -140,7 +144,7 @@ def okfasta_main(argv=None):
         "filterids", parents=[fasta_io_parser],
         help='Filter by sequence ID')
     filterids_parser.add_argument(
-        "idsfile", type=argparse.FileType('r'),
+        "idsfile",
         help="File containing sequence IDs, one per line")
     filterids_parser.add_argument(
         "--remove-ids", action="store_true",
@@ -188,7 +192,7 @@ def okfasta_main(argv=None):
         "replaceids", parents=[fasta_io_parser],
         help="Replace sequence IDs")
     replaceids_subparser.add_argument(
-        "newidsfile", type=argparse.FileType('r'),
+        "newidsfile",
         help=(
             "File containing existing sequence ID and replacement "
             "sequence ID, one pair per line, separated by whitespace. "
@@ -246,7 +250,7 @@ def msa_ok_main(argv=None):
         "selectcol", parents=[fasta_io_parser],
         help='Select columns by position')
     selectcol_parser.add_argument(
-        "columnfile", type=argparse.FileType('r'),
+        "columnfile",
         help="File containing column numbers, one per line",
     )
     selectcol_parser.add_argument(
