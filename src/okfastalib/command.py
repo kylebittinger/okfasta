@@ -121,6 +121,18 @@ fasta_io_parser.add_argument(
     help="Output file (default: stdout)",
 )
 
+def open_input(fp):
+    if fp is not None:
+        return open(fp, "r")
+    else:
+        return sys.stdin
+
+def open_output(fp):
+    if fp is not None:
+        return open(fp, "w")
+    else:
+        return sys.stdin
+
 def okfasta_main(argv=None):
     # Ignore SIG_PIPE and don't throw exceptions on it
     # newbebweb.blogspot.com/2012/02/python-head-ioerror-errno-32-broken.html
@@ -225,17 +237,8 @@ def okfasta_main(argv=None):
     searchseq_parser.set_defaults(func=searchseq_subcommand)
 
     args = main_parser.parse_args(argv)
-
-    if args.input is not None:
-        args.input_file = open(args.input, "r")
-    else:
-        args.input_file = sys.stdin
-
-    if args.output is not None:
-        args.output_file = open(args.output, "w")
-    else:
-        args.output_file = sys.stdout
-
+    args.input_file = open_input(args.input)
+    args.output_file = open_output(args.output)
     args.func(args)
 
 
@@ -276,15 +279,7 @@ def msa_ok_main(argv=None):
     mismatches_parser.set_defaults(func=mismatches_subcommand)
 
     args = main_parser.parse_args(argv)
-    if args.input is not None:
-        args.input_file = open(args.input, "r")
-    else:
-        args.input_file = sys.stdin
-
-    if args.output is not None:
-        args.output_file = open(args.output, "w")
-    else:
-        args.output = sys.stdout
-
+    args.input_file = open_input(args.input)
+    args.output_file = open_output(args.output)
     args.func(args)
 
