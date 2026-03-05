@@ -16,8 +16,8 @@ from .io import (
     )
 
 def normalize_subcommand(args):
-    seqs = parse_fasta(args.input)
-    write_fasta(args.output, seqs)
+    seqs = parse_fasta(args.input_file)
+    write_fasta(args.output_file, seqs)
 
 def replacechars_subcommand(args):
     if args.replace is None:
@@ -27,95 +27,111 @@ def replacechars_subcommand(args):
     if args.remove is not None:
         for x in args.remove:
             replacements.append((x, ''))
-    seqs = parse_fasta(args.input)
+    seqs = parse_fasta(args.input_file)
     replaced_seqs = replace_chars(seqs, replacements)
-    write_fasta(args.output, replaced_seqs)
+    write_fasta(args.output_file, replaced_seqs)
 
 def replaceids_subcommand(args):
-    seqs = parse_fasta(args.input)
-    new_ids = dict(parse_new_ids(args.newidsfile))
+    new_ids_file = open(args.newidsfile, "r")
+    new_ids = dict(parse_new_ids(new_ids_file))
+    seqs = parse_fasta(args.input_file)
     relabeled_seqs = replace_seq_ids(seqs, new_ids)
-    write_fasta(args.output, relabeled_seqs)
+    write_fasta(args.output_file, relabeled_seqs)
 
 def randomseqs_subcommand(args):
-    seqs = parse_fasta(args.input)
+    seqs = parse_fasta(args.input_file)
     rseqs = randomize_seqs(seqs, args.n)
-    write_fasta(args.output, rseqs)
+    write_fasta(args.output_file, rseqs)
 
 def kmers_subcommand(args):
-    seqs = parse_fasta(args.input)
+    seqs = parse_fasta(args.input_file)
     for seq_id, pos, kmer in get_kmers(seqs, args.k):
-        args.output.write("{0}\t{1}\t{2}\n".format(seq_id, pos, kmer))
+        args.output_file.write("{0}\t{1}\t{2}\n".format(seq_id, pos, kmer))
 
 def extract_subcommand(args):
-    seq_regions = parse_regions(args.regionfile)
-    seqs = parse_fasta(args.input)
+    region_file = open(args.regionfile, "r")
+    seq_regions = parse_regions(region_file)
+    seqs = parse_fasta(args.input_file)
     extracted_seqs = extract_regions(seq_regions, seqs)
-    write_fasta(args.output, extracted_seqs)
+    write_fasta(args.output_file, extracted_seqs)
 
 def revcomp_subcommand(args):
-    seqs = parse_fasta(args.input)
+    seqs = parse_fasta(args.input_file)
     rseqs = ((desc, reverse_complement(seq)) for desc, seq in seqs)
-    write_fasta(args.output, rseqs)
+    write_fasta(args.output_file, rseqs)
 
 def selectcol_subcommand(args):
-    seqs = parse_fasta(args.input)
-    column_idxs = parse_column_idxs(args.columnfile)
+    column_file = open(args.columnfile, "r")
+    column_idxs = parse_column_idxs(column_file)
+    seqs = parse_fasta(args.input_file)
     msa = MSA.from_seqs(seqs)
     msa.filter_by_index(column_idxs, remove=args.remove_columns)
-    write_fasta(args.output, msa.seqs)
+    write_fasta(args.output_file, msa.seqs)
 
 def colstats_subcommand(args):
-    seqs = parse_fasta(args.input)
+    seqs = parse_fasta(args.input_file)
     msa = MSA.from_seqs(seqs)
-    args.output.write("\t".join(msa.column_stats_header))
-    args.output.write("\n")
+    args.output_file.write("\t".join(msa.column_stats_header))
+    args.output_file.write("\n")
     for stats_result in msa.column_stats():
         stats_values = stats_result.values()
-        args.output.write(msa.column_stats_fmt.format(*stats_values))
-        args.output.write("\n")
+        args.output_file.write(msa.column_stats_fmt.format(*stats_values))
+        args.output_file.write("\n")
 
 def mismatches_subcommand(args):
-    seqs = parse_fasta(args.input)
+    seqs = parse_fasta(args.input_file)
     vals = pairwise_mismatches(seqs, include_gaps=args.include_gaps, percent=args.percent)
     if args.percent:
         outfmt = "{0}\t{1}\t{2:.2f}\n"
     else:
         outfmt = "{0}\t{1}\t{2}\n"
     for id1, id2, val in vals:
-        args.output.write(outfmt.format(id1, id2, val))
+        args.output_file.write(outfmt.format(id1, id2, val))
 
 def filterids_subcommand(args):
-    seq_ids = set(parse_seq_ids(args.idsfile))
-    seqs = parse_fasta(args.input)
+    ids_file = open(args.idsfile, "r")
+    seq_ids = set(parse_seq_ids(ids_file))
+    seqs = parse_fasta(args.input_file)
     filtered_seqs = filter_seq_ids(seqs, seq_ids, remove=args.remove_ids)
-    write_fasta(args.output, filtered_seqs)
+    write_fasta(args.output_file, filtered_seqs)
 
 def searchdesc_subcommand(args):
-    seqs = parse_fasta(args.input)
+    seqs = parse_fasta(args.input_file)
     filtered_seqs = search_desc(seqs, args.regex)
-    write_fasta(args.output, filtered_seqs)
+    write_fasta(args.output_file, filtered_seqs)
 
 def searchseq_subcommand(args):
-    seqs = parse_fasta(args.input)
+    seqs = parse_fasta(args.input_file)
     filtered_seqs = search_seqs(
         seqs, args.query, search_revcomp=args.search_revcomp)
-    write_fasta(args.output, filtered_seqs)
+    write_fasta(args.output_file, filtered_seqs)
 
 def length_subcommand(args):
-    seqs = parse_fasta(args.input)
+    seqs = parse_fasta(args.input_file)
     for seq_id, seq_len in get_seq_lengths(seqs):
-        args.output.write("{0}\t{1}\n".format(seq_id, seq_len))
+        args.output_file.write("{0}\t{1}\n".format(seq_id, seq_len))
 
 fasta_io_parser = argparse.ArgumentParser(add_help=False)
 fasta_io_parser.add_argument(
-    "--input", type=argparse.FileType('r'), default=sys.stdin,
+    "--input",
     help="Input FASTA file (default: stdin)",
 )
 fasta_io_parser.add_argument(
-    "--output", type=argparse.FileType('w'), default=sys.stdout,
+    "--output",
     help="Output file (default: stdout)",
 )
+
+def open_input(fp):
+    if fp is not None:
+        return open(fp, "r")
+    else:
+        return sys.stdin
+
+def open_output(fp):
+    if fp is not None:
+        return open(fp, "w")
+    else:
+        return sys.stdin
 
 def okfasta_main(argv=None):
     # Ignore SIG_PIPE and don't throw exceptions on it
@@ -130,7 +146,7 @@ def okfasta_main(argv=None):
         "extract", parents=[fasta_io_parser],
         help='Extract sequence regions')
     extract_parser.add_argument(
-        "regionfile", type=argparse.FileType('r'),
+        "regionfile",
         help=(
             "File containing sequence ID, start position, and stop "
             "position for each region to extract."))
@@ -140,7 +156,7 @@ def okfasta_main(argv=None):
         "filterids", parents=[fasta_io_parser],
         help='Filter by sequence ID')
     filterids_parser.add_argument(
-        "idsfile", type=argparse.FileType('r'),
+        "idsfile",
         help="File containing sequence IDs, one per line")
     filterids_parser.add_argument(
         "--remove-ids", action="store_true",
@@ -188,7 +204,7 @@ def okfasta_main(argv=None):
         "replaceids", parents=[fasta_io_parser],
         help="Replace sequence IDs")
     replaceids_subparser.add_argument(
-        "newidsfile", type=argparse.FileType('r'),
+        "newidsfile",
         help=(
             "File containing existing sequence ID and replacement "
             "sequence ID, one pair per line, separated by whitespace. "
@@ -221,10 +237,8 @@ def okfasta_main(argv=None):
     searchseq_parser.set_defaults(func=searchseq_subcommand)
 
     args = main_parser.parse_args(argv)
-    if args.input is None: # pragma: no cover
-        args.input = sys.stdin
-    if args.output is None: # pragma: no cover
-        args.output = sys.stdout
+    args.input_file = open_input(args.input)
+    args.output_file = open_output(args.output)
     args.func(args)
 
 
@@ -239,7 +253,7 @@ def msa_ok_main(argv=None):
         "selectcol", parents=[fasta_io_parser],
         help='Select columns by position')
     selectcol_parser.add_argument(
-        "columnfile", type=argparse.FileType('r'),
+        "columnfile",
         help="File containing column numbers, one per line",
     )
     selectcol_parser.add_argument(
@@ -265,9 +279,7 @@ def msa_ok_main(argv=None):
     mismatches_parser.set_defaults(func=mismatches_subcommand)
 
     args = main_parser.parse_args(argv)
-    if args.input is None: # pragma: no cover
-        args.input = sys.stdin
-    if args.output is None: # pragma: no cover
-        args.output = sys.stdout
+    args.input_file = open_input(args.input)
+    args.output_file = open_output(args.output)
     args.func(args)
 
