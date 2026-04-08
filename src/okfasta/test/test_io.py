@@ -1,4 +1,4 @@
-from okfastalib.io import *
+from okfasta.io import *
 
 def test_parse_fasta():
     f = [
