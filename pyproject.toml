@@ -21,8 +21,5 @@ classifiers = [
 "homepage" = "https://github.com/kylebittinger/okfasta"
 
 [project.scripts]
-"okfasta" = "okfastalib.command:okfasta_main"
-"msa-ok" = "okfastalib.command:msa_ok_main"
-
-[tool.hatch.build.targets.wheel]
-packages = ["src/okfastalib"]
+"okfasta" = "okfasta.command:okfasta_main"
+"msa-ok" = "okfasta.command:msa_ok_main"
