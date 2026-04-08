@@ -1,6 +1,6 @@
 from pytest import approx
 
-from okfastalib.msa import *
+from okfasta.msa import *
 
 
 def test_msa_seqs():

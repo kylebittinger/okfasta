@@ -4,13 +4,13 @@ build-backend = "hatchling.build"
 
 [project]
 name = "okfasta"
-version = "0.0.2"
+version = "0.1.0.dev1"
 authors = [
   { name="Kyle Bittinger", email="kylebittinger@gmail.com" },
 ]
 description = "FASTA utilities"
 readme = "README.md"
-requires-python = ">=3.7"
+requires-python = ">=3.10"
 classifiers = [
     "Programming Language :: Python :: 3",
     "License :: OSI Approved :: MIT License",
@@ -18,12 +18,8 @@ classifiers = [
 ]
 
 [project.urls]
-"Homepage" = "https://github.com/kylebittinger/okfasta"
-"Bug Tracker" = "https://github.com/kylebittinger/okfasta/issues"
+"homepage" = "https://github.com/kylebittinger/okfasta"
 
 [project.scripts]
-"okfasta" = "okfastalib.command:okfasta_main"
-"msa-ok" = "okfastalib.command:msa_ok_main"
-
-[tool.hatch.build.targets.wheel]
-packages = ["src/okfastalib"]
+"okfasta" = "okfasta.command:okfasta_main"
+"msa-ok" = "okfasta.command:msa_ok_main"

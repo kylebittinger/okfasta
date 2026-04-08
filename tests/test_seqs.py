@@ -1,4 +1,4 @@
-from okfastalib.seqs import *
+from okfasta.seqs import *
 
 def test_replace_chars():
     seqs = [("a", "MCUUAC"), ("b", "TCGA")]
