@@ -42,7 +42,7 @@ def replacedesc_subcommand(args):
     with open(args.descfile) as d:
         new_descs = dict(parse_new_descs(d))
     seqs = parse_fasta(args.input_file)
-    relabeled_seqs = add_desc(seqs, new_descs, args.remove_old)
+    relabeled_seqs = replace_desc(seqs, new_descs, args.remove_old)
     write_fasta(args.output_file, relabeled_seqs)
 
 def randomseqs_subcommand(args):

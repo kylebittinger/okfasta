@@ -129,6 +129,13 @@ def test_replaceids_subcommand():
     output_seq_ids = [seq_id for seq_id, seq in parse_fasta_list(output)]
     assert output_seq_ids == ["a|b 42", "c-2 d"]
 
+def test_replacedesc_subcommand():
+    newdesc_file = tempfile_containing("a|b\t345\n")
+    output = run_okfasta(["replacedesc", newdesc_file.name], small_fasta)
+    assert parse_fasta_list(output) == [
+        ("a|b\t345", "GCAGACGATAC"), ("c|2.1 d", "GCAGCCGGT"),
+    ]
+
 def test_randomseqs_subcommand():
     output = run_okfasta(["randomseqs", "--n", "3"], tall_fasta)
     input_seqs = parse_fasta_list(tall_fasta.splitlines())
