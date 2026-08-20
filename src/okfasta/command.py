@@ -5,14 +5,14 @@ import sys
 from .seqs import (
     filter_seq_ids, get_seq_lengths, search_seqs, extract_regions,
     search_desc, get_kmers, replace_seq_ids, replace_chars, reverse_complement,
-    randomize_seqs,
+    randomize_seqs, replace_desc,
 )
 from .msa import (
     MSA, pairwise_mismatches,
     )
 from .io import (
     parse_fasta, write_fasta, parse_seq_ids, parse_regions, parse_column_idxs,
-    parse_new_ids,
+    parse_new_ids, parse_new_descs,
     )
 
 def normalize_subcommand(args):
@@ -36,6 +36,13 @@ def replaceids_subcommand(args):
     new_ids = dict(parse_new_ids(new_ids_file))
     seqs = parse_fasta(args.input_file)
     relabeled_seqs = replace_seq_ids(seqs, new_ids)
+    write_fasta(args.output_file, relabeled_seqs)
+
+def replacedesc_subcommand(args):
+    with open(args.descfile) as d:
+        new_descs = dict(parse_new_descs(d))
+    seqs = parse_fasta(args.input_file)
+    relabeled_seqs = add_desc(seqs, new_descs, args.remove_old)
     write_fasta(args.output_file, relabeled_seqs)
 
 def randomseqs_subcommand(args):
@@ -210,6 +217,18 @@ def okfasta_main(argv=None):
             "sequence ID, one pair per line, separated by whitespace. "
             "Existing sequence IDs not in the file are left as they are."))
     replaceids_subparser.set_defaults(func=replaceids_subcommand)
+
+    replacedesc_parser = subparsers.add_parser(
+        "replacedesc", parents=[fasta_io_parser],
+        help='Replace description lines')
+    replacedesc_parser.add_argument(
+        "descfile",
+        help="File containing new descriptions")
+    replacedesc_parser.add_argument(
+        "--remove-old", action="store_true",
+        help="Remove old descriptions",
+    )
+    replacedesc_parser.set_defaults(func=replacedesc_subcommand)
 
     revcomp_parser = subparsers.add_parser(
         "revcomp", parents=[fasta_io_parser],

@@ -61,3 +61,11 @@ def parse_new_ids(f):
         old_seq_id = toks[0]
         new_seq_id = toks[1]
         yield old_seq_id, new_seq_id
+
+def parse_new_descs(f):
+    for line in f:
+        line = line.strip()
+        if line.startswith("#") or (line == ""):
+            continue
+        seq_id = line.split()[0]
+        yield seq_id, line
