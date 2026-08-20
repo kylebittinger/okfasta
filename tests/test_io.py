@@ -29,3 +29,9 @@ def test_parse_new_ids():
     f = ["seq1 jfk", "kj\tjdf\tss", " # comment!", "\t\t\t", "seq3     k"]
     assert list(parse_new_ids(f)) == [
         ("seq1", "jfk"), ("kj", "jdf"), ("seq3", "k")]
+
+def test_parse_new_descs():
+    f = ["mvm\tldaisufy", "oief2|.. dfu8"]
+    assert list(parse_new_descs(f)) == [
+        ("mvm", "mvm\tldaisufy"), ("oief2|..", "oief2|.. dfu8")
+    ]

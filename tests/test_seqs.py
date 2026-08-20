@@ -6,6 +6,13 @@ def test_replace_chars():
     expected = [("a", "GCTTAC"), ("b", "TCGA")]
     assert list(observed) == expected
 
+def test_replace_desc():
+    seqs = [("a bcd", "CTAGCA"), ("h\t983d", "CCTGCTG")]
+    new_descs = {"a": "a\tnnnnnn"}
+    observed = replace_desc(seqs, new_descs)
+    expected = [("a\tnnnnnn", "CTAGCA"), ("h\t983d", "CCTGCTG")]
+    assert list(observed) == expected
+
 def test_remove_chars():
     seqs = [("a", "GCTTAC"), ("b", "TCGA")]
     observed = replace_chars(seqs, [("T", "")])

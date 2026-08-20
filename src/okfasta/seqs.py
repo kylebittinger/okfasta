@@ -27,6 +27,19 @@ def replace_seq_ids(seqs, new_seqids):
             new_desc = new_seq_id + ''.join(rest)
             yield (new_desc, seq)
 
+def replace_desc(seqs, new_descs, remove_old=False):
+    for old_desc, seq in seqs:
+        seq_id = get_seq_id(old_desc)
+        new_desc = new_descs.get(seq_id)
+        if new_desc is not None:
+            desc = new_desc
+        else:
+            if remove_old:
+                desc = seq_id
+            else:
+                desc = old_desc
+        yield desc, seq
+
 def get_seq_id(desc):
     return desc.split()[0]
 
@@ -69,18 +82,18 @@ def get_seq_lengths(seqs):
         yield seq_id, len(seq)
 
 def search_desc(seqs, regex_str):
-    for seq_id, seq in seqs:
-        if re.search(regex_str, seq_id):
-            yield seq_id, seq
+    for desc, seq in seqs:
+        if re.search(regex_str, desc):
+            yield desc, seq
 
 def search_seqs(seqs, query, search_revcomp=False):
     queryset = deambiguate(query)
     if search_revcomp:
         queryset = queryset + [reverse_complement(q) for q in queryset]
-    for seq_id, seq in seqs:
+    for desc, seq in seqs:
         for qseq in queryset:
             if qseq in seq:
-                yield seq_id, seq
+                yield desc, seq
                 continue
 
 def reverse_complement(seq):
